@@ -1,0 +1,16 @@
+{
+  "tenBai": "Hệ thống kinh, vĩ tuyến. Tọa độ địa lí",
+
+  "kienThucChinh": [
+    "Kinh tuyến là những nửa đường tròn nối cực Bắc và cực Nam.",
+    "Kinh tuyến gốc có giá trị 0°.",
+    "Vĩ tuyến gốc là đường Xích đạo.",
+    "Tọa độ địa lí gồm kinh độ và vĩ độ."
+  ],
+
+  "tuKhoa": [
+    "Kinh tuyến",
+    "Vĩ tuyến",
+    "Tọa độ địa lí"
+  ]
+}

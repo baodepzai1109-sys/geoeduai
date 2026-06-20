@@ -1,0 +1,623 @@
+{
+  "Tuyên Quang": {
+    "ten": "Tuyên Quang",
+    "trungTam": "Tuyên Quang",
+    "sapNhapTu": "Tuyên Quang, Hà Giang",
+    "vungMien": "Trung du và miền núi Bắc Bộ",
+    "viTriDiaLy": "Cực Bắc Việt Nam",
+    "dienTich": "13.795,50 km²",
+    "danSo": "1.865.270 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Na Hang",
+        "link": "https://vi.wikipedia.org/wiki/H%E1%BB%93_Na_Hang"
+      },
+      {
+        "ten": "Tân Trào",
+        "link": "https://vi.wikipedia.org/wiki/T%C3%A2n_Tr%C3%A0o"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Lào Cai": {
+    "ten": "Lào Cai",
+    "trungTam": "Lào Cai",
+    "sapNhapTu": "Lào Cai, Yên Bái",
+    "vungMien": "Tây Bắc Bộ",
+    "viTriDiaLy": "Cửa ngõ biên giới phía Bắc",
+    "dienTich": "13.256,92 km²",
+    "danSo": "1.778.785 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Sa Pa",
+        "link": "https://vi.wikipedia.org/wiki/Sa_Pa"
+      },
+      {
+        "ten": "Fansipan",
+        "link": "https://vi.wikipedia.org/wiki/Fansipan"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Thái Nguyên": {
+    "ten": "Thái Nguyên",
+    "trungTam": "Thái Nguyên",
+    "sapNhapTu": "Thái Nguyên, Bắc Kạn",
+    "vungMien": "Trung du và miền núi Bắc Bộ",
+    "viTriDiaLy": "Vùng trung du Bắc Bộ",
+    "dienTich": "8.375,21 km²",
+    "danSo": "1.799.489 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Hồ Núi Cốc",
+        "link": "https://vi.wikipedia.org/wiki/H%E1%BB%93_N%C3%BAi_C%E1%BB%91c"
+      },
+      {
+        "ten": "ATK Định Hóa",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%8Bnh_H%C3%B3a"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Phú Thọ": {
+    "ten": "Phú Thọ",
+    "trungTam": "Phú Thọ",
+    "sapNhapTu": "Phú Thọ, Vĩnh Phúc, Hòa Bình",
+    "vungMien": "Trung du miền núi Bắc Bộ",
+    "viTriDiaLy": "Cửa ngõ Tây Bắc",
+    "dienTich": "9.361,38 km²",
+    "danSo": "4.022.638 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Đền Hùng",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%81n_H%C3%B9ng"
+      },
+      {
+        "ten": "Tam Đảo",
+        "link": "https://vi.wikipedia.org/wiki/Tam_%C4%90%E1%BA%A3o"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Bắc Ninh": {
+    "ten": "Bắc Ninh",
+    "trungTam": "Bắc Ninh",
+    "sapNhapTu": "Bắc Ninh, Bắc Giang",
+    "vungMien": "Đồng bằng sông Hồng",
+    "viTriDiaLy": "Cửa ngõ Đông Bắc Hà Nội",
+    "dienTich": "4.718,6 km²",
+    "danSo": "3.619.433 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Chùa Dâu",
+        "link": "https://vi.wikipedia.org/wiki/Ch%C3%B9a_D%C3%A2u"
+      },
+      {
+        "ten": "Đền Đô",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%81n_%C4%90%C3%B4"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Hưng Yên": {
+    "ten": "Hưng Yên",
+    "trungTam": "Hưng Yên",
+    "sapNhapTu": "Hưng Yên, Thái Bình",
+    "vungMien": "Đồng bằng sông Hồng",
+    "viTriDiaLy": "Ven sông Hồng",
+    "dienTich": "2.514,81 km²",
+    "danSo": "3.567.943 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Phố Hiến",
+        "link": "https://vi.wikipedia.org/wiki/Ph%E1%BB%91_Hi%E1%BA%BFn"
+      },
+      {
+        "ten": "Chùa Chuông",
+        "link": "https://vi.wikipedia.org/wiki/Ch%C3%B9a_Chu%C3%B4ng"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Hải Phòng": {
+    "ten": "Hải Phòng",
+    "trungTam": "Hải Phòng",
+    "sapNhapTu": "Hải Phòng, Hải Dương",
+    "vungMien": "Đồng bằng sông Hồng",
+    "viTriDiaLy": "Cửa biển phía Bắc",
+    "dienTich": "3.194,72 km²",
+    "danSo": "4.664.124 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Cát Bà",
+        "link": "https://vi.wikipedia.org/wiki/C%E1%BA%A3t_B%C3%A0"
+      },
+      {
+        "ten": "Đồ Sơn",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93_S%C6%A1n"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Ninh Bình": {
+    "ten": "Ninh Bình",
+    "trungTam": "Ninh Bình",
+    "sapNhapTu": "Ninh Bình, Nam Định, Hà Nam",
+    "vungMien": "Đồng bằng sông Hồng",
+    "viTriDiaLy": "Cửa ngõ Bắc Trung Bộ",
+    "dienTich": "3.942,62 km²",
+    "danSo": "4.412.264 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Tràng An",
+        "link": "https://vi.wikipedia.org/wiki/Tr%C3%A0ng_An"
+      },
+      {
+        "ten": "Tam Cốc",
+        "link": "https://vi.wikipedia.org/wiki/Tam_C%E1%BB%91c_%E2%80%93_B%C3%ADch_%C4%90%E1%BB%99ng"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Quảng Trị": {
+    "ten": "Quảng Trị",
+    "trungTam": "Quảng Trị",
+    "sapNhapTu": "Quảng Bình, Quảng Trị",
+    "vungMien": "Bắc Trung Bộ",
+    "viTriDiaLy": "Miền Trung Việt Nam",
+    "dienTich": "12.700 km²",
+    "danSo": "1.870.845 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Địa đạo Vịnh Mốc",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%8Ba_%C4%91%E1%BA%A1o_V%E1%BB%8Bnh_M%E1%BB%91c"
+      },
+      {
+        "ten": "Cầu Hiền Lương",
+        "link": "https://vi.wikipedia.org/wiki/S%C3%B4ng_B%E1%BA%BFn_H%E1%BA%A3i"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Đà Nẵng": {
+    "ten": "Đà Nẵng",
+    "trungTam": "Đà Nẵng",
+    "sapNhapTu": "Đà Nẵng, Quảng Nam",
+    "vungMien": "Duyên hải miền Trung",
+    "viTriDiaLy": "Trung tâm miền Trung",
+    "dienTich": "11.859,59 km²",
+    "danSo": "3.065.628 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Bà Nà Hills",
+        "link": "https://vi.wikipedia.org/wiki/B%C3%A0_N%C3%A0_Hills"
+      },
+      {
+        "ten": "Cầu Rồng",
+        "link": "https://vi.wikipedia.org/wiki/C%E1%BA%A7u_R%E1%BB%93ng"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Quảng Ngãi": {
+    "ten": "Quảng Ngãi",
+    "trungTam": "Quảng Ngãi",
+    "sapNhapTu": "Quảng Ngãi, Kon Tum",
+    "vungMien": "Duyên hải Nam Trung Bộ",
+    "viTriDiaLy": "Ven biển miền Trung",
+    "dienTich": "14.832,55 km²",
+    "danSo": "2.161.755 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Lý Sơn",
+        "link": "https://vi.wikipedia.org/wiki/L%C3%BD_S%C6%A1n"
+      },
+      {
+        "ten": "Thác Trắng",
+        "link": "https://vi.wikipedia.org/wiki/Qu%E1%BA%A3ng_Ng%C3%A3i"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Gia Lai": {
+    "ten": "Gia Lai",
+    "trungTam": "Gia Lai",
+    "sapNhapTu": "Gia Lai, Bình Định",
+    "vungMien": "Tây Nguyên",
+    "viTriDiaLy": "Cao nguyên Trung Bộ",
+    "dienTich": "21.576,53 km²",
+    "danSo": "3.583.693 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Biển Hồ Pleiku",
+        "link": "https://vi.wikipedia.org/wiki/Bi%E1%BB%83n_H%E1%BB%93"
+      },
+      {
+        "ten": "Chư Đăng Ya",
+        "link": "https://vi.wikipedia.org/wiki/Gia_Lai"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Khánh Hòa": {
+    "ten": "Khánh Hòa",
+    "trungTam": "Khánh Hòa",
+    "sapNhapTu": "Khánh Hòa, Ninh Thuận",
+    "vungMien": "Duyên hải Nam Trung Bộ",
+    "viTriDiaLy": "Ven biển Nam Trung Bộ",
+    "dienTich": "8.555,86 km²",
+    "danSo": "2.243.554 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Vịnh Nha Trang",
+        "link": "https://vi.wikipedia.org/wiki/Nha_Trang"
+      },
+      {
+        "ten": "Hòn Mun",
+        "link": "https://vi.wikipedia.org/wiki/H%C3%B2n_Mun"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Lâm Đồng": {
+    "ten": "Lâm Đồng",
+    "trungTam": "Lâm Đồng",
+    "sapNhapTu": "Lâm Đồng, Bình Thuận, Đắk Nông",
+    "vungMien": "Tây Nguyên",
+    "viTriDiaLy": "Cao nguyên Lâm Viên",
+    "dienTich": "24.233,07 km²",
+    "danSo": "3.872.999 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Đà Lạt",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%C3%A0_L%E1%BA%A1t"
+      },
+      {
+        "ten": "Hồ Tuyền Lâm",
+        "link": "https://vi.wikipedia.org/wiki/H%E1%BB%93_Tuy%E1%BB%81n_L%C3%A2m"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Đắk Lắk": {
+    "ten": "Đắk Lắk",
+    "trungTam": "Đắk Lắk",
+    "sapNhapTu": "Đắk Lắk, Phú Yên",
+    "vungMien": "Tây Nguyên",
+    "viTriDiaLy": "Trung tâm Tây Nguyên",
+    "dienTich": "18.096,40 km²",
+    "danSo": "3.346.853 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Hồ Lắk",
+        "link": "https://vi.wikipedia.org/wiki/H%E1%BB%93_L%E1%BA%AFk"
+      },
+      {
+        "ten": "Dray Nur",
+        "link": "https://vi.wikipedia.org/wiki/Dray_Nur"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "TP Hồ Chí Minh": {
+    "ten": "TP Hồ Chí Minh",
+    "trungTam": "TP Hồ Chí Minh",
+    "sapNhapTu": "TP.HCM, Bình Dương, Bà Rịa Vũng Tàu",
+    "vungMien": "Đông Nam Bộ",
+    "viTriDiaLy": "Trung tâm kinh tế Việt Nam",
+    "dienTich": "6.772,59 km²",
+    "danSo": "14.002.598 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Chợ Bến Thành",
+        "link": "https://vi.wikipedia.org/wiki/Ch%E1%BB%A3_B%E1%BA%BFn_Th%C3%A0nh"
+      },
+      {
+        "ten": "Dinh Độc Lập",
+        "link": "https://vi.wikipedia.org/wiki/Dinh_%C4%90%E1%BB%99c_L%E1%BA%ADp"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Đồng Nai": {
+    "ten": "Đồng Nai",
+    "trungTam": "Đồng Nai",
+    "sapNhapTu": "Đồng Nai, Bình Phước",
+    "vungMien": "Đông Nam Bộ",
+    "viTriDiaLy": "Vùng công nghiệp",
+    "dienTich": "12.737,18 km²",
+    "danSo": "4.491.408 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Vườn quốc gia Cát Tiên",
+        "link": "https://vi.wikipedia.org/wiki/V%C6%B0%E1%BB%9Dn_qu%E1%BB%91c_gia_C%C3%A1t_Ti%C3%AAn"
+      },
+      {
+        "ten": "Thác Giang Điền",
+        "link": "https://vi.wikipedia.org/wiki/%C4%90%E1%BB%93ng_Nai"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Tây Ninh": {
+    "ten": "Tây Ninh",
+    "trungTam": "Tây Ninh",
+    "sapNhapTu": "Tây Ninh, Long An",
+    "vungMien": "Đông Nam Bộ",
+    "viTriDiaLy": "Biên giới Campuchia",
+    "dienTich": "8.536,44 km²",
+    "danSo": "3.254.170 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Núi Bà Đen",
+        "link": "https://vi.wikipedia.org/wiki/N%C3%BAi_B%C3%A0_%C4%90en"
+      },
+      {
+        "ten": "Tòa Thánh Tây Ninh",
+        "link": "https://vi.wikipedia.org/wiki/C%C3%A0o_%C4%90%C3%A0i"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Cần Thơ": {
+    "ten": "Cần Thơ",
+    "trungTam": "Cần Thơ",
+    "sapNhapTu": "Cần Thơ, Hậu Giang, Sóc Trăng",
+    "vungMien": "Đồng bằng sông Cửu Long",
+    "viTriDiaLy": "Trung tâm miền Tây",
+    "dienTich": "6.360,83 km²",
+    "danSo": "4.199.824 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Bến Ninh Kiều",
+        "link": "https://vi.wikipedia.org/wiki/Ninh_Ki%E1%BB%81u"
+      },
+      {
+        "ten": "Chợ nổi Cái Răng",
+        "link": "https://vi.wikipedia.org/wiki/Ch%E1%BB%A3_n%E1%BB%95i_C%C3%A1i_R%C4%83ng"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Vĩnh Long": {
+    "ten": "Vĩnh Long",
+    "trungTam": "Vĩnh Long",
+    "sapNhapTu": "Vĩnh Long, Bến Tre, Trà Vinh",
+    "vungMien": "Đồng bằng sông Cửu Long",
+    "viTriDiaLy": "Miền Tây Nam Bộ",
+    "dienTich": "6.296,20 km²",
+    "danSo": "4.257.581 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Cù lao An Bình",
+        "link": "https://vi.wikipedia.org/wiki/V%C4%A9nh_Long"
+      },
+      {
+        "ten": "Văn Thánh Miếu",
+        "link": "https://vi.wikipedia.org/wiki/V%C4%A9nh_Long"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Đồng Tháp": {
+    "ten": "Đồng Tháp",
+    "trungTam": "Đồng Tháp",
+    "sapNhapTu": "Đồng Tháp, Tiền Giang",
+    "vungMien": "Đồng bằng sông Cửu Long",
+    "viTriDiaLy": "Vùng sông nước",
+    "dienTich": "5.938,64 km²",
+    "danSo": "4.370.046 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Tràm Chim",
+        "link": "https://vi.wikipedia.org/wiki/V%C6%B0%E1%BB%9Dn_qu%E1%BB%91c_gia_Tr%C3%A0m_Chim"
+      },
+      {
+        "ten": "Sa Đéc",
+        "link": "https://vi.wikipedia.org/wiki/Sa_%C4%90%C3%A9c"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  },
+  "Cà Mau": {
+    "ten": "Cà Mau",
+    "trungTam": "Cà Mau",
+    "sapNhapTu": "Cà Mau, Bạc Liêu",
+    "vungMien": "Đồng bằng sông Cửu Long",
+    "viTriDiaLy": "Cực Nam Việt Nam",
+    "dienTich": "7.942,39 km²",
+    "danSo": "2.606.672 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Mũi Cà Mau",
+        "link": "https://vi.wikipedia.org/wiki/M%C5%A9i_C%C3%A0_Mau"
+      },
+      {
+        "ten": "Hòn Đá Bạc",
+        "link": "https://vi.wikipedia.org/wiki/H%C3%B2n_%C4%90%C3%A1_B%E1%BA%A1c"
+      },
+      {
+        "ten": "Nhà Công Tử Bạc Liêu",
+        "link": "https://www.vietnamairlines.com/ca/vi/plan-book/travel/travel-guide/nha-cong-tu-bac-lieu"
+      },
+      {
+        "ten": "Quan Âm Phật Đài",
+        "link": "https://vi.wikipedia.org/wiki/Quan_%C3%82m_Ph%E1%BA%ADt_%C4%90%C3%A0i_(B%E1%BA%A1c_Li%C3%AAu)"
+      }
+    ]
+  },
+  "An Giang": {
+    "ten": "An Giang",
+    "trungTam": "An Giang",
+    "sapNhapTu": "An Giang, Kiên Giang",
+    "vungMien": "Đồng bằng sông Cửu Long",
+    "viTriDiaLy": "Tây Nam Bộ",
+    "dienTich": "9.888,91 km²",
+    "danSo": "4.952.238 người",
+    "diaDanhNoiTieng": [
+      {
+        "ten": "Núi Cấm",
+        "link": "https://vi.wikipedia.org/wiki/N%C3%BAi_C%E1%BA%A7m"
+      },
+      {
+        "ten": "Rừng tràm Trà Sư",
+        "link": "https://vi.wikipedia.org/wiki/Tr%C3%A0_S%C6%B0"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 3",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      },
+      {
+        "ten": "Điểm du lịch nổi bật 4",
+        "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
+      }
+    ]
+  }
+}
