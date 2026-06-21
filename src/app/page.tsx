@@ -4,6 +4,8 @@ import Features from "@/components/Features";
 import DashboardPreview from "@/components/DashboardPreview";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import Image from "next/image";
+
 
 export default function HomePage() {
   const features = [
@@ -262,23 +264,13 @@ className="
 
               <div className="text-center mb-8">
 
-                <div
-  className="
-    w-20
-    h-20
-    mx-auto
-    rounded-full
-    flex
-    items-center
-    justify-center
-    bg-blue-500/10
-    border
-    border-blue-500/30
-    text-2xl md:text-4xl
-    shadow-[0_0_40px_rgba(59,130,246,.4)]
-  "
->
-  🌍
+<div className="relative w-24 h-24 mx-auto rounded-2xl overflow-hidden bg-blue-500/10 border border-blue-500/30 shadow-[0_0_40px_rgba(59,130,246,.4)]">
+  <Image
+    src="/images/logo.png"
+    alt="logo"
+    fill
+    className="object-cover"
+  />
 </div>
 
                 <h2

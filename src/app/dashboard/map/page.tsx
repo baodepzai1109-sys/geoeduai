@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-
+import Image from "next/image";
 const VietnamMap = dynamic(
   () => import("@/components/VietnamMap"),
   { ssr: false }
@@ -80,26 +80,31 @@ h-[300px] md:h-[600px]
 
               <div className="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
 
-                <div
-                  className="
-                  w-14
-                  h-14
+<div
+  className="
+    w-14
+    h-14
+    rounded-2xl
 
-                  rounded-2xl
+    relative
+    overflow-hidden
 
-                  flex
-                  items-center
-                  justify-center
+    flex
+    items-center
+    justify-center
 
-                  bg-blue-500/10
-                  border
-                  border-blue-500/30
-
-                  text-2xl
-                "
-                >
-                  🌍
-                </div>
+    bg-blue-500/10
+    border
+    border-blue-500/30
+  "
+>
+  <Image
+    src="/images/logo.png"
+    alt="logo"
+    fill
+    className="object-cover"
+  />
+</div>
 
                 <div>
 
