@@ -10,24 +10,24 @@ import Image from "next/image";
 export default function HomePage() {
   const features = [
     {
-      icon: "🤖",
+      icon: "/ai-assistant-logo.png",
       title: "AI Trợ lý Địa lý",
       desc: "Hỏi đáp kiến thức địa lý Việt Nam",
     },
     {
-      icon: "📝",
-      title: "AI Tạo Giáo Án",
-      desc: "Sinh giáo án theo chương trình GDPT",
+      icon: "/quiz-logo.png",
+      title: "Quiz Địa lí",
+      desc: "Hơn 1000+ câu hỏi Địa lí theo chương trình THCS và THPT.",
     },
     {
-      icon: "📊",
+      icon: "/test-generator-logo.png",
       title: "AI Tạo Đề Kiểm Tra",
       desc: "Tạo đề trắc nghiệm theo chương trình GDPT",
     },
     {
-      icon: "🎮",
-      title: "AI Đố Vui Bản Đồ",
-      desc: "Học tập qua trò chơi tương tác",
+      icon: "/atlas-library-logo.png",
+      title: "Thư viện Atlat",
+      desc: "Atlat điện tử tích hợp tìm kiếm, phóng to và tra cứu thông minh.",
     },
   ];
 
@@ -315,6 +315,7 @@ className="
   const content = (
     <div
       className="
+        group
         rounded-3xl
         border border-blue-500/20
         bg-blue-950/20
@@ -327,9 +328,24 @@ className="
         h-full
       "
     >
-      <div className="text-4xl mb-4">
-        {item.icon}
-      </div>
+      <div className="mb-4 flex justify-center">
+  <img
+    src={item.icon}
+    alt={item.title}
+    className="
+      w-20
+      h-20
+      object-contain
+
+      drop-shadow-[0_0_15px_rgba(59,130,246,.45)]
+
+      transition-all
+      duration-300
+
+      group-hover:scale-110
+    "
+  />
+</div>
 
       <h3 className="text-base md:text-xl font-bold">
         {item.title}

@@ -919,3 +919,24 @@ button:active {
 .ai-scroll::-webkit-scrollbar-track {
   background: transparent !important;
 }
+html,
+body {
+  scrollbar-gutter: auto;
+}
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+html,
+body {
+  scrollbar-width: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+}
