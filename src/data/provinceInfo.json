@@ -619,5 +619,125 @@
         "link": "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam"
       }
     ]
+  },
+  "Cao Bằng": {
+    "ten": "Cao Bằng",
+    "trungTam": "TP. Cao Bằng",
+    "sapNhapTu": "Cao Bằng",
+    "viTriDiaLy": "Đông Bắc Việt Nam, giáp Trung Quốc",
+    "dienTich": "6.700 km²",
+    "danSo": "khoảng 550.000 người",
+    "vungMien": "Đông Bắc Bộ",
+    "diaDanhNoiTieng": ["Thác Bản Giốc", "Động Ngườm Ngao", "Khu di tích Pác Bó"]
+  },
+
+  "Điện Biên": {
+    "ten": "Điện Biên",
+    "trungTam": "TP. Điện Biên Phủ",
+    "sapNhapTu": "Điện Biên",
+    "viTriDiaLy": "Tây Bắc Việt Nam, giáp Lào và Trung Quốc",
+    "dienTich": "9.540 km²",
+    "danSo": "khoảng 650.000 người",
+    "vungMien": "Tây Bắc Bộ",
+    "diaDanhNoiTieng": ["Chiến trường Điện Biên Phủ", "Đồi A1", "Hồ Pá Khoang"]
+  },
+
+  "Hà Tĩnh": {
+    "ten": "Hà Tĩnh",
+    "trungTam": "TP. Hà Tĩnh",
+    "sapNhapTu": "Hà Tĩnh",
+    "viTriDiaLy": "Bắc Trung Bộ",
+    "dienTich": "5.990 km²",
+    "danSo": "khoảng 1,3 triệu người",
+    "vungMien": "Bắc Trung Bộ",
+    "diaDanhNoiTieng": ["Ngã ba Đồng Lộc", "Chùa Hương Tích", "Biển Thiên Cầm"]
+  },
+
+  "Lai Châu": {
+    "ten": "Lai Châu",
+    "trungTam": "TP. Lai Châu",
+    "sapNhapTu": "Lai Châu",
+    "viTriDiaLy": "Tây Bắc Việt Nam",
+    "dienTich": "9.068 km²",
+    "danSo": "khoảng 500.000 người",
+    "vungMien": "Tây Bắc Bộ",
+    "diaDanhNoiTieng": ["Đỉnh Pu Ta Leng", "Cao nguyên Sìn Hồ", "Đèo Ô Quy Hồ"]
+  },
+
+  "Lạng Sơn": {
+    "ten": "Lạng Sơn",
+    "trungTam": "TP. Lạng Sơn",
+    "sapNhapTu": "Lạng Sơn",
+    "viTriDiaLy": "Đông Bắc Việt Nam, giáp Trung Quốc",
+    "dienTich": "8.310 km²",
+    "danSo": "khoảng 800.000 người",
+    "vungMien": "Đông Bắc Bộ",
+    "diaDanhNoiTieng": ["Động Tam Thanh", "Núi Tô Thị", "Chợ Đông Kinh"]
+  },
+
+  "Nghệ An": {
+    "ten": "Nghệ An",
+    "trungTam": "TP. Vinh",
+    "sapNhapTu": "Nghệ An",
+    "viTriDiaLy": "Bắc Trung Bộ",
+    "dienTich": "16.490 km²",
+    "danSo": "khoảng 3,4 triệu người",
+    "vungMien": "Bắc Trung Bộ",
+    "diaDanhNoiTieng": ["Làng Sen", "Biển Cửa Lò", "Vườn quốc gia Pù Mát"]
+  },
+
+  "Quảng Ninh": {
+    "ten": "Quảng Ninh",
+    "trungTam": "TP. Hạ Long",
+    "sapNhapTu": "Quảng Ninh",
+    "viTriDiaLy": "Đông Bắc Việt Nam",
+    "dienTich": "6.207 km²",
+    "danSo": "khoảng 1,4 triệu người",
+    "vungMien": "Đông Bắc Bộ",
+    "diaDanhNoiTieng": ["Vịnh Hạ Long", "Yên Tử", "Đảo Cô Tô"]
+  },
+
+  "Sơn La": {
+    "ten": "Sơn La",
+    "trungTam": "TP. Sơn La",
+    "sapNhapTu": "Sơn La",
+    "viTriDiaLy": "Tây Bắc Việt Nam",
+    "dienTich": "14.109 km²",
+    "danSo": "khoảng 1,3 triệu người",
+    "vungMien": "Tây Bắc Bộ",
+    "diaDanhNoiTieng": ["Nhà tù Sơn La", "Mộc Châu", "Tà Xùa"]
+  },
+
+  "Thanh Hóa": {
+    "ten": "Thanh Hóa",
+    "trungTam": "TP. Thanh Hóa",
+    "sapNhapTu": "Thanh Hóa",
+    "viTriDiaLy": "Bắc Trung Bộ",
+    "dienTich": "11.114 km²",
+    "danSo": "khoảng 3,7 triệu người",
+    "vungMien": "Bắc Trung Bộ",
+    "diaDanhNoiTieng": ["Thành Nhà Hồ", "Biển Sầm Sơn", "Suối Cá Cẩm Lương"]
+  },
+
+  "Hà Nội": {
+    "ten": "TP. Hà Nội",
+    "trungTam": "Quận Hoàn Kiếm",
+    "sapNhapTu": "Hà Nội, Hà Tây, Mê Linh, một phần Hòa Bình",
+    "viTriDiaLy": "Trung tâm Đồng bằng sông Hồng",
+    "dienTich": "3.359 km²",
+    "danSo": "khoảng 8,5 triệu người",
+    "vungMien": "Đồng bằng sông Hồng",
+    "diaDanhNoiTieng": ["Hồ Gươm", "Lăng Bác", "Văn Miếu Quốc Tử Giám"]
+  },
+
+  "Huế": {
+    "ten": "Huế",
+    "trungTam": "Quận Phú Xuân",
+    "sapNhapTu": "Thừa Thiên Huế",
+    "viTriDiaLy": "Miền Trung Việt Nam",
+    "dienTich": "4.947 km²",
+    "danSo": "khoảng 1,2 triệu người",
+    "vungMien": "Bắc Trung Bộ",
+    "diaDanhNoiTieng": ["Đại Nội Huế", "Chùa Thiên Mụ", "Lăng Khải Định"]
   }
 }

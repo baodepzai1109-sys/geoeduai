@@ -218,6 +218,7 @@ setHistory((prev) => {
     flex-1
     overflow-y-auto
     space-y-2
+    ai-scroll
     "
   >
     {history.length === 0 && (
@@ -365,7 +366,7 @@ setHistory((prev) => {
       <div className="flex-1 flex flex-col">
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto ai-scroll">
 
           <div className="max-w-5xl mx-auto px-6 py-6">
 

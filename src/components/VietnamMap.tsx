@@ -256,13 +256,13 @@ maxWidth: "340px",
 layer.bindPopup(
 `
 <div style="
-  width:280px;
-  max-width:85vw;
+  width:100%;
+  max-width:100%;
+  box-sizing:border-box;
   font-size:12px;
   background:linear-gradient(135deg,#0b1220,#102a5c);
   color:white;
   border-radius:20px;
-  overflow:hidden;
   font-family:Inter,sans-serif;
   box-shadow:0 20px 40px rgba(0,0,0,.4);
 ">
@@ -295,7 +295,7 @@ layer.bindPopup(
 
     <div style="
       display:grid;
-      grid-template-columns:1fr 70px;
+      grid-template-columns:1fr 95px;
       gap:14px;
       align-items:start;
     ">
@@ -321,8 +321,8 @@ layer.bindPopup(
 
       <!-- LOGO TỈNH -->
 <div style="
-width:60px;
-height:60px;
+width:85px;
+height:85px;
 
   background:
     radial-gradient(
@@ -416,11 +416,16 @@ height:60px;
 
     </div>
 
-    <div style="
-      margin-top:18px;
-      padding-top:14px;
-      border-top:1px solid rgba(255,255,255,.15);
-    ">
+    <div 
+    class="custom-scroll"
+    style="
+margin-top:12px;
+padding-top:10px;
+border-top:1px solid rgba(255,255,255,.15);
+max-height:110px;
+overflow-y:auto;
+padding-right:4px;
+">
 
       <div style="
         font-weight:700;
@@ -474,8 +479,10 @@ height:60px;
 </div>
 `,
 {
-  maxWidth: 320,
-  minWidth: 260,
+  
+  maxWidth: 260,
+  minWidth: 180,
+  autoPan: true,
 }
 );
   layer.on({
@@ -519,6 +526,7 @@ click: (e: any) => {
     }}
   />
 )}
+
 
       <ProvinceLabels geoData={geo34} />
     </>

@@ -557,6 +557,9 @@ styles: {
 
           max-w-4xl
           mx-auto
+          max-h-[700px]
+          overflow-y-auto
+          custom-scroll
           "
         >
           {result ? (

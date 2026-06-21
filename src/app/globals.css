@@ -663,3 +663,259 @@ body {
     font-size: 12px !important;
   }
 }
+.leaflet-popup-content-wrapper {
+  max-width: 240px !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+  width: auto !important;
+  max-width: 240px !important;
+}
+
+@media (max-width: 768px) {
+  .leaflet-popup-content-wrapper {
+    max-width: 210px !important;
+  }
+
+  .leaflet-popup-content {
+    max-width: 210px !important;
+  }
+}
+.leaflet-popup-content {
+  width: 260px !important;
+  margin: 8px !important;
+}
+
+@media (max-width: 768px) {
+  .leaflet-popup-content {
+    width: 250px !important;
+  }
+}
+.leaflet-popup-content-wrapper {
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.leaflet-popup-content {
+  margin: 0 !important;
+}
+
+.leaflet-popup-tip {
+  background: #102a5c !important;
+}
+
+.leaflet-popup-tip-container {
+  margin-top: -1px;
+}
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgba(96,165,250,.7);
+  border-radius: 999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(147,197,253,1);
+}
+/* Popup tỉnh */
+.province-popup .leaflet-popup-content-wrapper {
+  padding: 0 !important;
+  overflow: hidden;
+  border-radius: 20px;
+  background: transparent;
+}
+
+.province-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: 300px !important;
+  max-width: 85vw !important;
+}
+
+@media (max-width: 768px) {
+  .province-popup .leaflet-popup-content {
+    width: 220px !important;
+    max-width: 220px !important;
+  }
+}
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #60a5fa transparent;
+}
+
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #60a5fa,
+    #2563eb
+  );
+  border-radius: 999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: #3b82f6;
+}
+.province-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: 300px !important;
+}
+
+@media (max-width: 768px) {
+  .province-popup .leaflet-popup-content {
+    width: 220px !important;
+  }
+}
+.province-popup .leaflet-popup-content {
+  margin: 0 !important;
+  width: 300px !important;
+}
+/* AI Scrollbar */
+
+/* ===== Scrollbar ===== */
+
+
+/* ===== Selection ===== */
+
+::selection {
+  background: rgba(59,130,246,.4);
+  color: white;
+}
+
+/* ===== Smooth ===== */
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ===== Body ===== */
+
+body {
+  background:
+    radial-gradient(
+      circle at top,
+      rgba(37,99,235,.18),
+      transparent 35%
+    ),
+    linear-gradient(
+      180deg,
+      #020617,
+      #081229
+    );
+
+  color: white;
+}
+
+/* ===== Glass Effect ===== */
+
+.glass {
+  background: rgba(15,23,42,.65);
+
+  backdrop-filter: blur(16px);
+
+  border: 1px solid rgba(59,130,246,.15);
+
+  box-shadow:
+    0 0 25px rgba(59,130,246,.08);
+}
+
+/* ===== Hover Card ===== */
+
+.glass-hover {
+  transition: all .25s ease;
+}
+
+.glass-hover:hover {
+  transform: translateY(-3px);
+
+  border-color: rgba(96,165,250,.4);
+
+  box-shadow:
+    0 0 25px rgba(59,130,246,.2);
+}
+
+/* ===== Input ===== */
+
+input,
+select,
+textarea {
+  transition: all .25s ease;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  box-shadow:
+    0 0 0 2px rgba(59,130,246,.25),
+    0 0 25px rgba(59,130,246,.15);
+}
+
+/* ===== Button ===== */
+
+button {
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+button:active {
+  transform: scale(.97);
+}
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeUp {
+  animation: fadeUp .4s ease;
+}
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(59,130,246,.7);
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(96,165,250,1);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+  box-shadow: none;
+}
+.ai-scroll::-webkit-scrollbar-track {
+  background: transparent !important;
+}

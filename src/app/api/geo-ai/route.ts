@@ -6,26 +6,73 @@ apiKey: process.env.GROQ_API_KEY,
 baseURL: "https://api.groq.com/openai/v1",
 });
 
+function normalizeText(text: string) {
+return text
+.toLowerCase()
+.normalize("NFD")
+.replace(/[\u0300-\u036f]/g, "")
+.replace(/đ/g, "d")
+.trim();
+}
+
 export async function POST(req: Request) {
 try {
 const { question } = await req.json();
+
 const q = normalizeText(question);
-function normalizeText(text: string) {
-  return text
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/đ/g, "d")
-    .trim();
+
+// ====================
+// TRẢ LỜI NHANH
+// ====================
+
+if (
+  q.includes("bao nhieu tinh") ||
+  q.includes("bao nhieu tinh thanh") ||
+  q.includes("so tinh thanh viet nam")
+) {
+  return Response.json({
+    answer: "Việt Nam hiện có 34 tỉnh/thành phố.",
+  });
 }
-const context = JSON.stringify(
-  provinceInfo,
-  null,
-  2
+
+if (
+  q.includes("bao nhieu song") ||
+  q.includes("may con song") ||
+  q.includes("so luong song")
+) {
+  return Response.json({
+    answer:
+      "Việt Nam có khoảng 2.360 con sông dài từ 10 km trở lên.",
+  });
+}
+
+// ====================
+// TÌM TỈNH ĐƯỢC NHẮC TỚI
+// ====================
+
+const provinceNames = Object.keys(provinceInfo);
+
+const matchedProvince = provinceNames.find((province) =>
+  q.includes(normalizeText(province))
 );
+
+let provinceContext = "";
+
+if (matchedProvince) {
+  provinceContext = JSON.stringify(
+    provinceInfo[
+      matchedProvince as keyof typeof provinceInfo
+    ],
+    null,
+    2
+  );
+}
+
 const response =
   await client.chat.completions.create({
-    model: "llama-3.3-70b-versatile",
+    model: "openai/gpt-oss-120b",
+
+    temperature: 0.1,
 
     messages: [
       {
@@ -36,63 +83,60 @@ Bạn là GeoEdu AI.
 
 Nhiệm vụ:
 
-- Chuyên gia Địa lý Việt Nam.
-- Trả lời bằng tiếng Việt.
-- Trả lời dễ hiểu.
-- Không bịa thông tin.
-- Ưu tiên dữ liệu được cung cấp.
+* Chuyên gia Địa lý Việt Nam.
+* Trả lời bằng tiếng Việt.
+* Trả lời ngắn gọn nhưng chính xác.
+* Không bịa thông tin.
+* Nếu dữ liệu có câu trả lời thì phải ưu tiên dữ liệu.
 
-Quy tắc:
-
-1. Hiểu các câu hỏi viết thiếu dấu.
-2. Hiểu câu hỏi không có dấu hỏi.
-3. Hiểu cách diễn đạt khác nhau.
+Bạn phải hiểu các cách hỏi khác nhau:
 
 Ví dụ:
 
+"Bạc Liêu nhập vào đâu"
+"Bạc Liêu sáp nhập vào tỉnh nào"
+"Tỉnh nào nhận Bạc Liêu"
+
+=> cùng một ý.
+
+"Cà Mau được tạo từ tỉnh nào"
 "Cà Mau sáp nhập từ đâu"
-"Cà Mau được sáp nhập từ tỉnh nào"
-"Tỉnh nào tạo thành Cà Mau"
+"Cà Mau hình thành từ đâu"
 
 => cùng một ý.
 
-"Việt Nam có bao nhiêu sông"
-"VN có mấy con sông"
-"Số lượng sông ở Việt Nam"
+Người dùng có thể:
 
-=> cùng một ý.
+* viết thiếu dấu
+* viết sai chính tả nhẹ
+* không có dấu hỏi
 
-4. Nếu dữ liệu chứa câu trả lời thì phải dùng dữ liệu đó.
+Bạn phải tự hiểu.
 
-5. Nếu dữ liệu không có thì dùng kiến thức địa lý chính xác.
+Nếu dữ liệu không có câu trả lời:
 
-6. Nếu người dùng hỏi:
-- Việt Nam có bao nhiêu tỉnh
-- Việt Nam có bao nhiêu tỉnh thành
-- Số tỉnh thành Việt Nam
+* dùng kiến thức địa lý chính xác.
+* không đoán.
 
-=> luôn trả lời:
+DỮ LIỆU TỈNH ĐANG LIÊN QUAN:
 
-"Việt Nam hiện có 34 tỉnh/thành phố."
+${provinceContext || "Không xác định được tỉnh cụ thể"}
 
+TOÀN BỘ DỮ LIỆU:
 
-DỮ LIỆU THAM KHẢO:
-
-${context || "Không có dữ liệu địa phương phù hợp."}
+${JSON.stringify(provinceInfo)}
 `,
 },
-{
-role: "user",
-content: question,
-},
-],
-
-    temperature: 0.2,
+      {
+        role: "user",
+        content: question,
+      },
+    ],
   });
 
 return Response.json({
   answer:
-    response.choices[0].message.content ??
+    response.choices[0].message.content ||
     "Không có câu trả lời",
 });
 
@@ -100,9 +144,7 @@ return Response.json({
 console.error(error);
 
 return Response.json({
-  answer:
-    error?.message ||
-    "Đã xảy ra lỗi",
+  answer: error?.message || "Đã xảy ra lỗi",
 });
 
 }
