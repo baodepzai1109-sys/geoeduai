@@ -50,9 +50,9 @@ Quy tắc:
 
 Ví dụ:
 
-"Bạc Liêu sáp nhập từ đâu"
-"Bạc Liêu được sáp nhập từ tỉnh nào"
-"Tỉnh nào tạo thành Bạc Liêu"
+"Cà Mau sáp nhập từ đâu"
+"Cà Mau được sáp nhập từ tỉnh nào"
+"Tỉnh nào tạo thành Cà Mau"
 
 => cùng một ý.
 
