@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "GeoEdu AI",
   description: "GeoEdu AI",
   icons: {
-    icon: "/images/logo.png",
+    icon: "/favicon.ico",
   },
 };
 
