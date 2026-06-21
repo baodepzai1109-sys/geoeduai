@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
 const inter = Inter({
   subsets: ["latin", "vietnamese"],
 });
@@ -9,6 +8,9 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "GeoEdu AI",
   description: "GeoEdu AI",
+  icons: {
+    icon: "/images/logo.png",
+  },
 };
 
 export default function RootLayout({
