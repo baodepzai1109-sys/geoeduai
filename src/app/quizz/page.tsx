@@ -401,7 +401,7 @@ return ( <main
  text-cyan-400
  "
 >
-🧠 AI Phân tích kết quả
+AI Phân tích kết quả
 </h3>
 
 <div
