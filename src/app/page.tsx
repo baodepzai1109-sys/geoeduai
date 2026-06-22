@@ -11,12 +11,12 @@ export default function HomePage() {
   const features = [
     {
       icon: "/ai-assistant-logo.png",
-      title: "AI Trợ lý Địa lý",
-      desc: "Hỏi đáp kiến thức địa lý Việt Nam",
+      title: "AI Trợ lý Địa Lí",
+      desc: "Hỏi đáp kiến thức địa lí Việt Nam",
     },
     {
       icon: "/quiz-logo.png",
-      title: "Quiz Địa lí",
+      title: "Quiz Địa Lí",
       desc: "Hơn 1000+ câu hỏi Địa lí theo chương trình THCS và THPT.",
     },
     {
@@ -185,7 +185,7 @@ export default function HomePage() {
 </h1>
 
 <p className=" mt-5 text-lg text-blue-300 font-semibold tracking-wide " >
-  Nền tảng trí tuệ nhân tạo hỗ trợ giảng dạy và học tập Địa lý Việt Nam
+  Nền tảng trí tuệ nhân tạo hỗ trợ giảng dạy và học tập Địa lí Việt Nam
 </p>
 
 <p className=" mt-5 text-xl text-slate-300 leading-relaxed max-w-[650px] " >
@@ -296,7 +296,7 @@ className="
                 ">
                   Tích hợp các công cụ AI hỗ trợ giáo viên
                   và học sinh trong giảng dạy, học tập
-                  và khám phá Địa lý Việt Nam.
+                  và khám phá Địa lí Việt Nam.
                 </p>
 
               </div>
@@ -356,7 +356,7 @@ className="
       </p>
     </div>
   );
-  if (item.title === "AI Trợ lý Địa lý") {
+  if (item.title === "AI Trợ lý Địa Lí") {
     return (
       <Link
         key={item.title}
@@ -371,6 +371,16 @@ if (item.title === "AI Tạo Đề Kiểm Tra") {
     <Link
       key={item.title}
       href="/dethi"
+    >
+      {content}
+    </Link>
+  );
+}
+if (item.title === "Quiz Địa Lí") {
+  return (
+    <Link
+      key={item.title}
+      href="/quizz"
     >
       {content}
     </Link>

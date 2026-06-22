@@ -1,7 +1,8 @@
 import OpenAI from "openai";
 
-const openai = new OpenAI({
+const client = new OpenAI({
   apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
 
 export async function POST(req: Request) {
@@ -22,21 +23,27 @@ thuộc ${lesson}.
 Trả về JSON đúng định dạng:
 
 [
-{
-"question":"...",
-"options":["A","B","C","D"],
-"answer":0,
-"topic":"..."
-}
+  {
+    "question":"...",
+    "options":["A","B","C","D"],
+    "answer":0,
+    "topic":"..."
+  }
 ]
 
 Chỉ trả JSON.
 `;
 
     const response =
-      await openai.chat.completions.create({
-        model: "gpt-4.1-mini",
+      await client.chat.completions.create({
+        model: "openai/gpt-oss-120b",
+        temperature: 0.3,
         messages: [
+          {
+            role: "system",
+            content:
+              "Bạn là chuyên gia Địa lí Việt Nam. Chỉ trả về JSON hợp lệ.",
+          },
           {
             role: "user",
             content: prompt,
@@ -45,15 +52,26 @@ Chỉ trả JSON.
       });
 
     const text =
-      response.choices[0].message.content;
+      response.choices[0].message.content
+        ?.replace(/```json/g, "")
+        .replace(/```/g, "")
+        .trim() || "[]";
+
+    console.log(text);
 
     return Response.json({
-      questions: JSON.parse(text || "[]"),
+      questions: JSON.parse(text),
     });
-  } catch {
+  } catch (error: any) {
+    console.error(error);
+
     return Response.json(
-      { error: "Lỗi tạo quiz" },
-      { status: 500 }
+      {
+        error: error?.message || "Lỗi tạo quiz",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }

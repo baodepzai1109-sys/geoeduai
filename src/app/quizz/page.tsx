@@ -1,14 +1,23 @@
 "use client";
-
-import { useState } from "react";
-
+import ReactMarkdown from "react-markdown";
+import { useState, useRef } from "react";
+type Question = {
+  question: string;
+  options: string[];
+  answer: number;
+  topic?: string;
+};
 export default function QuizPage() {
 const [grade, setGrade] = useState("6");
+const [analysis, setAnalysis] =
+  useState("");
 const [lesson, setLesson] = useState("bai1");
 const [difficulty, setDifficulty] = useState("de");
 const [count, setCount] = useState(10);
+const [wrongQuestions, setWrongQuestions] =
+  useState<string[]>([]);
 const [questions, setQuestions] =
-  useState<any[]>([]);
+  useState<Question[]>([]);
 
 const [current, setCurrent] =
   useState(0);
@@ -20,6 +29,11 @@ const [wrongTopics, setWrongTopics] =
   useState<string[]>([]);
 
 const [finished, setFinished] =
+  useState(false);
+const [selected, setSelected] =
+  useState<number | null>(null);
+const resultRef = useRef<HTMLDivElement>(null);
+const [showResult, setShowResult] =
   useState(false);
   async function generateQuiz() {
   const res = await fetch(
@@ -38,11 +52,11 @@ const [finished, setFinished] =
       }),
     }
   );
-
   const data = await res.json();
 
-  setQuestions(data.questions);
+  console.log(data);
 
+  setQuestions(data.questions);
   setCurrent(0);
 
   setScore(0);
@@ -51,6 +65,64 @@ const [finished, setFinished] =
 
   setFinished(false);
 }
+function checkAnswer(selectedIndex: number) {
+  if (showResult) return;
+
+  const q = questions[current];
+
+  setSelected(selectedIndex);
+  setShowResult(true);
+  setTimeout(() => {
+  resultRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "center",
+  });
+}, 100);
+
+  const correct =
+    selectedIndex === q.answer;
+
+  if (correct) {
+    setScore((prev) => prev + 10);
+  } else {
+setWrongQuestions((prev) => [
+  ...prev,
+  q.question,
+]);
+  }
+setTimeout(async () => {
+  if (current + 1 >= questions.length) {
+
+    const res = await fetch(
+      "/api/analyze-quiz",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          wrongQuestions,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    setAnalysis(data.analysis);
+
+    setFinished(true);
+
+  } else {
+    setCurrent((prev) => prev + 1);
+  }
+
+  setSelected(null);
+  setShowResult(false);
+
+}, 1200);
+}
+
 return ( <main
    className="
    min-h-screen
@@ -108,16 +180,18 @@ return ( <main
     </div>
 
     <div
-      className="
-      mt-8
-      rounded-3xl
-      border
-      border-cyan-500/20
-      bg-slate-900/40
-      backdrop-blur-xl
-      p-8
-      "
-    >
+  className="
+  mt-8
+  rounded-[32px]
+  border
+  border-cyan-400/20
+  bg-slate-900/50
+  backdrop-blur-2xl
+  p-8
+  min-h-[350px]
+  shadow-[0_0_40px_rgba(34,211,238,.08)]
+  "
+>
       <h2 className="font-bold text-xl mb-6">
         Thiết lập Quiz
       </h2>
@@ -253,52 +327,281 @@ return ( <main
 
       </div>
 
-      <button
-        className="
-        mt-8
-        px-8
-        py-4
-        rounded-2xl
-        bg-gradient-to-r
-        from-cyan-500
-        to-blue-600
-        font-bold
-        hover:scale-105
-        transition-all
-        shadow-[0_0_30px_rgba(34,211,238,.4)]
-        "
-      >
-        🚀 Bắt đầu Quiz
-      </button>
+<button
+  onClick={generateQuiz}
+  className="
+  mt-8
+  px-8
+  py-4
+  rounded-2xl
+  bg-gradient-to-r
+  from-cyan-500
+  to-blue-600
+  font-bold
+  hover:scale-105
+  transition-all
+  shadow-[0_0_30px_rgba(34,211,238,.4)]
+  "
+>
+  🚀 Bắt đầu Quiz
+</button>
     </div>
+
+    <div
+  className="
+  mt-8
+  rounded-3xl
+  border
+  border-cyan-500/20
+  bg-slate-900/40
+  backdrop-blur-xl
+  p-8
+  min-h-[300px]
+  "
+>
+  {questions.length > 0 ? (
+    finished ? (
+      <div className="text-center">
+    <h2
+      className="
+      text-7xl
+      drop-shadow-[0_0_20px_rgba(34,211,238,.8)]
+      font-black
+      text-cyan-400
+      "
+    >
+      🏆 {score} điểm
+    </h2>
+
+    <p className="mt-4 text-slate-300">
+      Bạn trả lời đúng
+      {" "}
+      {score / 10}
+      {" "}
+      /
+      {" "}
+      {questions.length}
+      câu
+    </p>
 
     <div
       className="
       mt-8
-      rounded-3xl
-      border
-      border-cyan-500/20
-      bg-slate-900/40
-      backdrop-blur-xl
-      p-8
-      min-h-[300px]
+      text-left
+      rounded-2xl
+      bg-slate-950/50
+      p-6
       "
     >
-      <div
-        className="
-        h-full
-        flex
-        items-center
-        justify-center
-        text-slate-500
-        "
-      >
-        Câu hỏi Quiz sẽ xuất hiện ở đây
-      </div>
+      <h3
+ className="
+ text-xl
+ font-bold
+ mb-4
+ text-cyan-400
+ "
+>
+🧠 AI Phân tích kết quả
+</h3>
+
+<div
+ className="
+ whitespace-pre-line
+ text-slate-300
+ leading-8
+ "
+>
+<div
+  className="
+  prose
+  prose-invert
+  max-w-none
+  prose-headings:text-cyan-400
+  prose-strong:text-white
+  prose-li:text-slate-300
+  prose-p:text-slate-300
+  "
+>
+</div>
+</div>
+
+{wrongQuestions.length === 0 ? (
+  <p className="text-green-400 text-lg">
+    🎉 Xuất sắc! Bạn đã trả lời đúng toàn bộ câu hỏi.
+  </p>
+) : (
+  <ReactMarkdown>
+    {analysis}
+  </ReactMarkdown>
+)}
     </div>
 
   </div>
-</main>
+) : (
+  <>
 
+<div
+  className="
+  w-full
+  h-4
+  bg-slate-800
+  rounded-full
+  overflow-hidden
+  mb-8
+  border
+  border-cyan-500/20
+  "
+>
+      <div
+        className="
+        h-full
+        bg-gradient-to-r
+        from-cyan-400
+        to-blue-600
+        shadow-[0_0_20px_rgba(34,211,238,.8)]
+        transition-all
+        duration-500
+        "
+        style={{
+          width: `${
+            ((current + 1) /
+              questions.length) *
+            100
+          }%`,
+        }}
+      />
+    </div>
+
+    <p className="text-cyan-400">
+      Câu {current + 1} / {questions.length}
+    </p>
+
+    <h2
+      className="
+        text-3xl
+        font-bold
+        mt-4
+        mb-8
+        leading-relaxed
+        text-white
+      "
+    >
+      {questions[current]?.question}
+    </h2>
+
+    <div className="grid gap-4">
+
+      {questions[current]?.options?.map(
+        (
+          option: string,
+          index: number
+        ) => (
+          <button
+            key={index}
+            onClick={() =>
+              checkAnswer(index)
+            }
+            className={`
+p-4
+rounded-2xl
+border
+text-left
+transition-all
+duration-300
+
+${
+  showResult &&
+  index === questions[current].answer
+    ? "bg-green-600 border-green-400 scale-105"
+    : ""
+}
+
+${
+  showResult &&
+  selected === index &&
+  index !== questions[current].answer
+    ? "bg-red-600 border-red-400 animate-pulse"
+    : ""
+}
+
+${
+  !showResult
+    ? "bg-slate-800/60 border-slate-700 hover:border-cyan-400 hover:bg-slate-700"
+    : ""
+}
+`}
+          >
+            {option}
+          </button>
+        )
+      )}
+
+    </div>
+{showResult && (
+  <div className="mt-8">
+
+    {selected === questions[current].answer ? (
+      <div
+        className="
+        rounded-2xl
+        bg-green-500/15
+        border
+        border-green-400/30
+        p-5
+        text-green-300
+        text-center
+        text-xl
+        font-bold
+        animate-bounce
+        "
+      >
+        ✅ Chính xác! +10 điểm
+      </div>
+    ) : (
+      <div
+        className="
+        rounded-2xl
+        bg-red-500/15
+        border
+        border-red-400/30
+        p-5
+        text-center
+        "
+      >
+        <div className="text-red-300 text-xl font-bold">
+          ❌ Chưa chính xác
+        </div>
+
+        <div className="mt-3 text-green-300">
+          Đáp án đúng:
+          {" "}
+          {
+            questions[current].options[
+              questions[current].answer
+            ]
+          }
+        </div>
+      </div>
+    )}
+
+  </div>
+)}
+  </>
+)
+
+) : ( <div
+   className="
+   h-full
+   flex
+   items-center
+   justify-center
+   text-slate-500
+   "
+ >
+Câu hỏi Quiz sẽ xuất hiện ở đây </div>
+)}
+    </div>
+  </div>
+</main>
 );
 }
