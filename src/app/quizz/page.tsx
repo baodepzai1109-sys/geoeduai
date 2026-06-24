@@ -1,4 +1,11 @@
 "use client";
+import geo6 from "@/data/geo6.json";
+import geo7 from "@/data/geo7.json";
+import geo8 from "@/data/geo8.json";
+import geo9 from "@/data/geo9.json";
+import geo10 from "@/data/geo10.json";
+import geo11 from "@/data/geo11.json";
+import geo12 from "@/data/geo12.json";
 import ReactMarkdown from "react-markdown";
 import { useState, useRef } from "react";
 type Question = {
@@ -14,8 +21,23 @@ const [analysis, setAnalysis] =
 const [lesson, setLesson] = useState("bai1");
 const [difficulty, setDifficulty] = useState("de");
 const [count, setCount] = useState(10);
+type WrongQuestion = {
+  question: string;
+  userAnswer: string;
+  correctAnswer: string;
+  topic?: string;
+};
+const geoMap = {
+  "6": geo6,
+  "7": geo7,
+  "8": geo8,
+  "9": geo9,
+  "10": geo10,
+  "11": geo11,
+  "12": geo12,
+};
 const [wrongQuestions, setWrongQuestions] =
-  useState<string[]>([]);
+  useState<WrongQuestion[]>([]);
 const [questions, setQuestions] =
   useState<Question[]>([]);
 
@@ -27,7 +49,8 @@ const [score, setScore] =
 
 const [wrongTopics, setWrongTopics] =
   useState<string[]>([]);
-
+const currentLessons =
+  geoMap[grade as keyof typeof geoMap] as any[];
 const [finished, setFinished] =
   useState(false);
 const [selected, setSelected] =
@@ -87,7 +110,12 @@ function checkAnswer(selectedIndex: number) {
   } else {
 setWrongQuestions((prev) => [
   ...prev,
-  q.question,
+  {
+    question: q.question,
+    userAnswer: q.options[selectedIndex],
+    correctAnswer: q.options[q.answer],
+    topic: q.topic,
+  },
 ]);
   }
 setTimeout(async () => {
@@ -102,8 +130,9 @@ setTimeout(async () => {
             "application/json",
         },
         body: JSON.stringify({
-          wrongQuestions,
-        }),
+        wrongQuestions,
+        grade,
+}),
       }
     );
 
@@ -196,10 +225,10 @@ return ( <main
         Thiết lập Quiz
       </h2>
 
-      <div className="grid md:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
 
         <div>
-          <label className="text-slate-300 text-sm">
+          <label className="block text-slate-300 mb-2">
             Khối
           </label>
 
@@ -209,14 +238,14 @@ return ( <main
               setGrade(e.target.value)
             }
             className="
-            mt-2
             w-full
+            h-14
+            rounded-2xl
             bg-slate-950
             border
-            border-cyan-500/20
-            rounded-2xl
+            border-cyan-500/30
             px-4
-            py-3
+            text-white
             "
           >
             <option value="6">Địa lí 6</option>
@@ -230,34 +259,38 @@ return ( <main
         </div>
 
         <div>
-          <label className="text-slate-300 text-sm">
+          <label className="block text-slate-300 mb-2">
             Bài học
           </label>
 
-          <select
-            value={lesson}
-            onChange={(e) =>
-              setLesson(e.target.value)
-            }
-            className="
-            mt-2
-            w-full
-            bg-slate-950
-            border
-            border-cyan-500/20
-            rounded-2xl
-            px-4
-            py-3
-            "
-          >
-            <option value="bai1">Bài 1</option>
-            <option value="bai2">Bài 2</option>
-            <option value="bai3">Bài 3</option>
-          </select>
+<select
+  value={lesson}
+  onChange={(e) => setLesson(e.target.value)
+  }
+className="
+      w-full
+      h-14
+      rounded-2xl
+      bg-slate-950
+      border
+      border-cyan-500/30
+      px-4
+      text-white
+      "
+>
+  {currentLessons.map((item, index) => (
+    <option
+      key={index}
+      value={index.toString()}
+    >
+      {item.tenBai}
+    </option>
+  ))}
+</select>
         </div>
 
         <div>
-          <label className="text-slate-300 text-sm">
+          <label className="block text-slate-300 mb-2">
             Độ khó
           </label>
 
@@ -267,14 +300,14 @@ return ( <main
               setDifficulty(e.target.value)
             }
             className="
-            mt-2
             w-full
+            h-14
+            rounded-2xl
             bg-slate-950
             border
-            border-cyan-500/20
-            rounded-2xl
+            border-cyan-500/30
             px-4
-            py-3
+            text-white
             "
           >
             <option value="de">
@@ -296,7 +329,7 @@ return ( <main
         </div>
 
         <div>
-          <label className="text-slate-300 text-sm">
+          <label className="block text-slate-300 mb-2">
             Số câu
           </label>
 
@@ -308,14 +341,14 @@ return ( <main
               )
             }
             className="
-            mt-2
             w-full
+            h-14
+            rounded-2xl
             bg-slate-950
             border
-            border-cyan-500/20
-            rounded-2xl
+            border-cyan-500/30
             px-4
-            py-3
+            text-white
             "
           >
             <option value={10}>10 câu</option>
@@ -343,7 +376,7 @@ return ( <main
   shadow-[0_0_30px_rgba(34,211,238,.4)]
   "
 >
-  🚀 Bắt đầu Quiz
+  Bắt đầu Quiz
 </button>
     </div>
 
@@ -476,18 +509,26 @@ AI Phân tích kết quả
       Câu {current + 1} / {questions.length}
     </p>
 
-    <h2
-      className="
-        text-3xl
-        font-bold
-        mt-4
-        mb-8
-        leading-relaxed
-        text-white
-      "
-    >
-      {questions[current]?.question}
-    </h2>
+<div
+  className="
+  prose
+  prose-invert
+  max-w-none
+
+  prose-p:text-3xl
+  prose-p:font-bold
+  prose-p:text-white
+
+  prose-strong:text-cyan-300
+
+  mt-4
+  mb-8
+  "
+>
+  <ReactMarkdown>
+    {questions[current]?.question || ""}
+  </ReactMarkdown>
+</div>
 
     <div className="grid gap-4">
 

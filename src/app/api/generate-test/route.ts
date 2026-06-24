@@ -55,11 +55,29 @@ switch (grade) {
   default:
     data = geo6;
 }
+const allLessons =
+  data as any[];
 
-const lessonData =
-  data[lesson] ||
-  JSON.stringify(data);
+const lessonData = allLessons.find(
+  (item) => item.tenBai === lesson
+);
 
+if (!lessonData) {
+  return Response.json({
+    answer: "Không tìm thấy bài học",
+  });
+}
+const geoMap = {
+  "Địa lí 6": geo6,
+  "Địa lí 7": geo7,
+  "Địa lí 8": geo8,
+  "Địa lí 9": geo9,
+  "Địa lí 10": geo10,
+  "Địa lí 11": geo11,
+  "Địa lí 12": geo12,
+};
+const currentLessons =
+  geoMap[grade as keyof typeof geoMap] || [];
 const response =
   await client.chat.completions.create({
     model: "llama-3.3-70b-versatile",
@@ -114,19 +132,22 @@ Câu 2
 
 Khối: ${grade}
 
-Bài học: ${lesson}
+Tên bài:
+${lessonData.tenBai}
 
-Số câu: ${count}
+Kiến thức:
+${lessonData.kienThucChinh
+  .map((k:any) =>
+    typeof k === "string"
+      ? k
+      : k.noiDung
+  )
+  .join("\n")}
 
-Dữ liệu bài học:
+Từ khóa:
+${lessonData.tuKhoa.join(", ")}
 
-${JSON.stringify(
-lessonData,
-null,
-2
-)}
-
-Hãy tạo ${count} câu trắc nghiệm.
+Tạo ${count} câu hỏi.
 `,
 },
 ],

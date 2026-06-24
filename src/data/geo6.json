@@ -1,16 +1,48 @@
-{
-  "tenBai": "Bài 1:Hệ thống kinh, vĩ tuyến. Tọa độ địa lí",
+[
+  {
+    "tenBai": "Bài 1: Hệ thống kinh, vĩ tuyến. Tọa độ địa lí",
+    "kienThucChinh": [
+      { "noiDung": "Kinh tuyến là những nửa đường tròn nối cực Bắc và cực Nam." },
+      { "noiDung": "Kinh tuyến gốc có giá trị 0°." },
+      { "noiDung": "Vĩ tuyến gốc là đường Xích đạo." },
+      { "noiDung": "Tọa độ địa lí gồm kinh độ và vĩ độ." }
+    ],
+    "tuKhoa": [
+      "Kinh tuyến",
+      "Vĩ tuyến",
+      "Tọa độ địa lí"
+    ]
+  },
 
-  "kienThucChinh": [
-    "Kinh tuyến là những nửa đường tròn nối cực Bắc và cực Nam.",
-    "Kinh tuyến gốc có giá trị 0°.",
-    "Vĩ tuyến gốc là đường Xích đạo.",
-    "Tọa độ địa lí gồm kinh độ và vĩ độ."
-  ],
+  {
+    "tenBai": "Bài 2: Bản đồ. Một số lưới kinh, vĩ tuyến. Phương hướng trên bản đồ",
+    "kienThucChinh": [
+      { "noiDung": "Bản đồ là hình biểu hiện bề mặt Trái Đất hoặc một phần bề mặt Trái Đất trên mặt phẳng." },
+      { "noiDung": "Lưới kinh, vĩ tuyến là hệ thống các đường kinh tuyến và vĩ tuyến trên bản đồ." },
+      { "noiDung": "Có thể xác định phương hướng trên bản đồ dựa vào kinh tuyến, mũi tên chỉ hướng Bắc hoặc lưới kinh vĩ tuyến." },
+      { "noiDung": "Trên bản đồ thông thường: Bắc ở trên, Nam ở dưới, Đông bên phải, Tây bên trái." }
+    ],
+    "tuKhoa": [
+      "Bản đồ",
+      "Lưới kinh vĩ tuyến",
+      "Phương hướng",
+      "Hướng Bắc"
+    ]
+  },
 
-  "tuKhoa": [
-    "Kinh tuyến",
-    "Vĩ tuyến",
-    "Tọa độ địa lí"
-  ]
-}
+  {
+    "tenBai": "Bài 3: Tỉ lệ bản đồ. Tính khoảng cách thực tế dựa vào tỉ lệ bản đồ",
+    "kienThucChinh": [
+      { "noiDung": "Tỉ lệ bản đồ cho biết mức độ thu nhỏ khoảng cách trên bản đồ so với thực tế." },
+      { "noiDung": "Có hai dạng tỉ lệ bản đồ: tỉ lệ số và tỉ lệ thước." },
+      { "noiDung": "Khoảng cách thực tế = khoảng cách trên bản đồ × mẫu số tỉ lệ." },
+      { "noiDung": "Tỉ lệ càng lớn thì bản đồ thể hiện càng chi tiết." }
+    ],
+    "tuKhoa": [
+      "Tỉ lệ bản đồ",
+      "Tỉ lệ số",
+      "Tỉ lệ thước",
+      "Khoảng cách thực tế"
+    ]
+  }
+]

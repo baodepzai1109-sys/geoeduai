@@ -1,7 +1,13 @@
 "use client";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
+import geo6 from "@/data/geo6.json";
+import geo7 from "@/data/geo7.json";
+import geo8 from "@/data/geo8.json";
+import geo9 from "@/data/geo9.json";
+import geo10 from "@/data/geo10.json";
+import geo11 from "@/data/geo11.json";
+import geo12 from "@/data/geo12.json";
 (pdfMake as any).vfs = pdfFonts.vfs;
 import { saveAs } from "file-saver";
 import {
@@ -11,17 +17,34 @@ import {
   HeadingLevel,
   AlignmentType,
 } from "docx";
+import { useEffect } from "react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 export default function TestPage() {
   const [grade, setGrade] = useState("6");
-  const [lesson, setLesson] = useState("bai1");
+  const [lesson, setLesson] = useState("");
   const [count, setCount] = useState(10);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
   const [showWordMenu, setShowWordMenu] = useState(false);
   const [showPdfMenu, setShowPdfMenu] = useState(false);
+ const geoMap: Record<string, any> = {
+  "6": geo6,
+  "7": geo7,
+  "8": geo8,
+  "9": geo9,
+  "10": geo10,
+  "11": geo11,
+  "12": geo12,
+};
+
+const currentLessons = geoMap[grade] || [];
+useEffect(() => {
+  if (currentLessons.length > 0) {
+    setLesson(currentLessons[0].tenBai);
+  }
+}, [grade, currentLessons]);
   async function generateTest() {
     function removeAnswer(text: string) {
   const index = text.indexOf("ĐÁP ÁN");
@@ -358,17 +381,17 @@ styles: {
             </div>
 
             {/* Bài */}
-            <div>
-              <label className="text-slate-300 text-sm">
-                Bài học
-              </label>
+<div>
+  <label className="text-slate-300 text-sm">
+    Bài học
+  </label>
 
-              <select
-                value={lesson}
-                onChange={(e) =>
-                  setLesson(e.target.value)
-                }
-                className="
+  <select
+    value={lesson}
+    onChange={(e) =>
+      setLesson(e.target.value)
+    }
+    className="
                 mt-2
                 w-full
                 bg-slate-950
@@ -377,21 +400,18 @@ styles: {
                 rounded-2xl
                 px-4
                 py-3
-                "
-              >
-                <option value="bai1">
-                  Bài 1
-                </option>
-
-                <option value="bai2">
-                  Bài 2
-                </option>
-
-                <option value="bai3">
-                  Bài 3
-                </option>
-              </select>
-            </div>
+    "
+  >
+    {currentLessons.map((item: any) => (
+      <option
+        key={item.tenBai}
+        value={item.tenBai}
+      >
+        {item.tenBai}
+      </option>
+    ))}
+  </select>
+</div>
 
             {/* Số câu */}
             <div>
