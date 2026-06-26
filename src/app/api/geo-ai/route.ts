@@ -96,7 +96,7 @@ Ví dụ:
 "Bạc Liêu nhập vào đâu"
 "Bạc Liêu sáp nhập vào tỉnh nào"
 "Tỉnh nào nhận Bạc Liêu"
-
+"tỉnh Bạc Liêu được sáp nhập vào tỉnh nào"
 => cùng một ý.
 
 "Cà Mau được tạo từ tỉnh nào"

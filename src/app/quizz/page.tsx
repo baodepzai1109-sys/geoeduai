@@ -18,7 +18,7 @@ export default function QuizPage() {
 const [grade, setGrade] = useState("6");
 const [analysis, setAnalysis] =
   useState("");
-const [lesson, setLesson] = useState("bai1");
+const [lesson, setLesson] = useState("0");
 const [difficulty, setDifficulty] = useState("de");
 const [count, setCount] = useState(10);
 type WrongQuestion = {
@@ -56,9 +56,12 @@ const [finished, setFinished] =
 const [selected, setSelected] =
   useState<number | null>(null);
 const resultRef = useRef<HTMLDivElement>(null);
+const pointPerQuestion = count === 10 ? 10 : 5;
+const correctAnswers = score / pointPerQuestion;
 const [showResult, setShowResult] =
   useState(false);
   async function generateQuiz() {
+  console.log("Difficulty được chọn:", difficulty);
   const res = await fetch(
     "/api/generate-quiz",
     {
@@ -75,11 +78,23 @@ const [showResult, setShowResult] =
       }),
     }
   );
-  const data = await res.json();
-
-  console.log(data);
-
+const data = await res.json();
+  console.log("API Response:", data);
+if (
+  data &&
+  Array.isArray(data.questions)
+) {
   setQuestions(data.questions);
+} else {
+  console.error("API lỗi:", data);
+
+  setQuestions([]);
+  alert(
+    data.error ||
+    "Không tạo được quiz"
+  );
+  return;
+}
   setCurrent(0);
 
   setScore(0);
@@ -106,8 +121,8 @@ function checkAnswer(selectedIndex: number) {
     selectedIndex === q.answer;
 
   if (correct) {
-    setScore((prev) => prev + 10);
-  } else {
+  setScore((prev) => prev + pointPerQuestion);
+} else {
 setWrongQuestions((prev) => [
   ...prev,
   {
@@ -321,10 +336,6 @@ className="
             <option value="kho">
               Khó
             </option>
-
-            <option value="sieukho">
-              Siêu khó
-            </option>
           </select>
         </div>
 
@@ -353,8 +364,6 @@ className="
           >
             <option value={10}>10 câu</option>
             <option value={20}>20 câu</option>
-            <option value={30}>30 câu</option>
-            <option value={40}>40 câu</option>
           </select>
         </div>
 
@@ -392,7 +401,7 @@ className="
   min-h-[300px]
   "
 >
-  {questions.length > 0 ? (
+  {Array.isArray(questions) && questions.length > 0 ? (
     finished ? (
       <div className="text-center">
     <h2
@@ -409,12 +418,12 @@ className="
     <p className="mt-4 text-slate-300">
       Bạn trả lời đúng
       {" "}
-      {score / 10}
+      {correctAnswers}
       {" "}
       /
       {" "}
       {questions.length}
-      câu
+      {" "}câu
     </p>
 
     <div
@@ -497,9 +506,9 @@ AI Phân tích kết quả
         "
         style={{
           width: `${
-            ((current + 1) /
-              questions.length) *
-            100
+            questions.length
+  ? ((current + 1) / questions.length) * 100
+  : 0
           }%`,
         }}
       />
@@ -596,7 +605,7 @@ ${
         animate-bounce
         "
       >
-        ✅ Chính xác! +10 điểm
+        ✅ Chính xác!
       </div>
     ) : (
       <div

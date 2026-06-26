@@ -1,10 +1,18 @@
 
 "use client";
-
-import { useState, useEffect } from "react";
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+import { Mic, SendHorizontal } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 export default function AIPage() {
+  const [listening, setListening] = useState(false);
   const [question, setQuestion] = useState("");
+  const recognitionRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const [messages, setMessages] = useState<
@@ -89,7 +97,69 @@ setHistory((prev) => {
 
     setLoading(false);
   }
+function startVoice() {
+  const SpeechRecognition =
+    window.SpeechRecognition ||
+    (window as any).webkitSpeechRecognition;
 
+  if (!SpeechRecognition) {
+    alert("Trình duyệt không hỗ trợ nhận diện giọng nói.");
+    return;
+  }
+
+  const recognition = new SpeechRecognition();
+
+  recognitionRef.current = recognition;
+
+  recognition.lang = "vi-VN";
+
+  recognition.interimResults = false;
+
+  recognition.continuous = false;
+
+  setListening(true);
+
+recognition.onresult = (event: any) => {
+  console.log(event);
+
+  const transcript =
+    event.results[event.results.length - 1][0].transcript;
+
+  console.log("Transcript:", transcript);
+
+  setQuestion((prev) =>
+    prev ? prev + " " + transcript : transcript
+  );
+};
+
+  recognition.onend = () => {
+    setListening(false);
+    recognitionRef.current = null;
+  };
+
+recognition.onerror = (e:any) => {
+  console.log("Speech Error:", e.error);
+  setListening(false);
+  recognitionRef.current = null;
+};
+  recognition.onstart = () => {
+  console.log("Bắt đầu nghe...");
+};
+
+recognition.onspeechstart = () => {
+  console.log("Đã phát hiện giọng nói");
+};
+
+recognition.onspeechend = () => {
+  console.log("Kết thúc nói");
+};
+  recognition.start();
+}
+function stopVoice() {
+  if (recognitionRef.current) {
+    recognitionRef.current.stop();
+  }
+}
   return (
     <main className="h-screen bg-slate-950 text-white flex overflow-hidden">
 
@@ -486,48 +556,93 @@ setHistory((prev) => {
   "
 >
 
-            <input
-              value={question}
-              onChange={(e) =>
-                setQuestion(e.target.value)
-              }
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  askAI();
-                }
-              }}
-              placeholder="Hỏi về địa lý Việt Nam..."
-              className="
-              flex-1
-              rounded-xl
-              bg-slate-900
-              border
-              border-blue-500/20
-              px-4
-              py-3
-              text-sm
-              outline-none
-              "
-            />
+<input
+  value={question}
+  onChange={(e) => setQuestion(e.target.value)}
+  onKeyDown={(e) => {
+    if (e.key === "Enter") askAI();
+  }}
+  placeholder="Hỏi về địa lý Việt Nam..."
+  className="
+    flex-1
+    rounded-xl
+    bg-slate-900
+    border
+    border-blue-500/20
+    px-4
+    py-3
+    text-sm
+    outline-none
+  "
+/>
 
-            <button
-              onClick={askAI}
-              disabled={loading}
-              className="
-              w-12
-              h-12
-              rounded-xl
-              bg-blue-600
-              hover:bg-blue-500
-              transition
-              flex
-              items-center
-              justify-center
-              text-lg
-              "
-            >
-              ➜
-            </button>
+{question.trim() === "" ? (
+
+  // Không nhập gì -> chỉ hiện Mic
+<button
+  onClick={
+    listening
+      ? stopVoice
+      : startVoice
+  }
+  className="
+    w-12
+    h-12
+    rounded-xl
+    bg-blue-600
+    hover:bg-blue-500
+    transition
+    flex
+    items-center
+    justify-center
+  "
+>
+  {listening ? (
+    <span className="text-xl">■</span>
+  ) : (
+    <Mic size={22} />
+  )}
+</button>
+
+) : (
+
+  <>
+<button
+  onClick={
+    listening
+      ? stopVoice
+      : startVoice
+  } 
+>
+  <Mic
+    className={
+      listening
+        ? "text-red-400 animate-pulse"
+        : ""
+    }
+  />
+</button>
+
+    <button
+      onClick={askAI}
+      disabled={loading}
+      className="
+        w-12
+        h-12
+        rounded-xl
+        bg-blue-600
+        hover:bg-blue-500
+        transition
+        flex
+        items-center
+        justify-center
+      "
+    >
+      <SendHorizontal size={20} />
+    </button>
+  </>
+
+)}
 
           </div>
         </div>

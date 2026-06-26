@@ -43,7 +43,6 @@ if (!Array.isArray(lessons)) {
 }
 
 const lessonData = lessons[Number(lesson)];
-
 if (!lessonData) {
   return Response.json(
     { error: "Không tìm thấy bài học." },
@@ -52,88 +51,103 @@ if (!lessonData) {
 }
 
 const prompt = `
-
 Bạn là giáo viên Địa lí.
 
-CHỈ được tạo câu hỏi từ dữ liệu dưới đây.
+CHỈ sử dụng dữ liệu dưới đây để tạo câu hỏi.
 
-DỮ LIỆU:
+=====================
+DỮ LIỆU
+=====================
 
 Tên bài:
 ${lessonData.tenBai}
 
-Kiến thức chính:
-${lessonData.kienThucChinh
-  .map((k:any)=>"- "+k.noiDung)
-  .join("\n")}
+Kiến thức:
+${lessonData.kienThucChinh.map((k:any)=>"- " + k.noiDung).join("\n")}
 
 Từ khóa:
 ${lessonData.tuKhoa.join(", ")}
 
-Yêu cầu:
+=====================
+YÊU CẦU BẮT BUỘC
+=====================
 
-* Chỉ sử dụng kiến thức trong dữ liệu.
-* Không tự bổ sung kiến thức bên ngoài.
-* Tạo ${count} câu hỏi trắc nghiệm.
-ĐỘ KHÓ:
-${
-difficulty === "de"
+- Tạo đúng ${count} câu hỏi trắc nghiệm
+- Mỗi câu có đúng 4 đáp án
+- Chỉ 1 đáp án đúng
+- answer là số (0–3)
+- topic luôn là tên bài
+- KHÔNG được thêm thông tin ngoài dữ liệu
+- KHÔNG giải thích
+- KHÔNG markdown
+- CHỈ trả về JSON hợp lệ
+- Không được có chữ ngoài JSON
+- Nếu không chắc, vẫn phải tạo đủ ${count} câu
+
+=====================
+QUY TẮC QUAN TRỌNG
+=====================
+
+- Không được lặp lại cùng một ý hỏi giữa các câu
+- Mỗi câu hỏi phải khác cách diễn đạt
+- Không được copy nguyên câu từ dữ liệu
+- Phải tự biến đổi cách hỏi
+
+=====================
+ĐỘ KHÓ (PHÂN BIỆT RÕ RÀNG)
+=====================
+
+${difficulty === "de"
 ? `
-ĐỘ KHÓ DỄ:
-- Chỉ hỏi nhận biết.
-- Đáp án đúng rất rõ ràng.
-- Không cần suy luận.
-- Chủ yếu học thuộc kiến thức.
+DỄ:
+- Chỉ hỏi 1 ý duy nhất trong dữ liệu
+- Câu hỏi dạng nhận biết hoặc định nghĩa
+- Không kết hợp nhiều thông tin
+- Không yêu cầu suy luận
+- Câu hỏi phải ngắn và trực tiếp
 `
 : difficulty === "trungbinh"
 ? `
-ĐỘ KHÓ TRUNG BÌNH:
-- Cần hiểu nội dung bài học.
-- Có đáp án gây nhiễu nhẹ.
-- Có thể phải so sánh giữa các khái niệm.
+TRUNG BÌNH:
+- Kết hợp 2 ý trong dữ liệu để hỏi
+- Yêu cầu hiểu nội dung bài học
+- Có nhiễu nhẹ giữa các đáp án
+- Có thể so sánh hoặc liên hệ đơn giản
 `
-: difficulty === "kho"
-? `
-ĐỘ KHÓ KHÓ:
-- Kết hợp nhiều ý trong bài.
-- Đáp án rất giống nhau.
-- Cần phân tích trước khi chọn.
-- Có câu hỏi vận dụng.
+: `
+KHÓ:
+- Kết hợp từ 2 đến 3 ý khác nhau trong bài
+- Câu hỏi yêu cầu phân tích hoặc suy luận nhẹ
+- Không được hỏi trực tiếp từ một dòng kiến thức
+- Phải biến đổi cách hỏi (không được giống EASY hoặc MEDIUM)
+- Đáp án gây nhiễu nhưng vẫn rõ ràng
+- Tuyệt đối không vượt ngoài dữ liệu
 `
-: difficulty === "sieukho"
-? `
-ĐỘ KHÓ SIÊU KHÓ:
-- Không hỏi học thuộc lòng đơn thuần.
-- Bắt buộc suy luận từ dữ liệu.
-- Kết hợp nhiều kiến thức trong bài.
-- Đáp án nhiễu rất mạnh.
-- Có thể xuất hiện câu hỏi phủ định.
-- Có thể xuất hiện câu hỏi so sánh.
-- Có thể xuất hiện câu hỏi tình huống.
-- Tạo các phương án sai nhưng hợp lý.
-- Chỉ học sinh nắm rất chắc kiến thức mới dễ đạt trên 80%.
-`
-:""
 }
-* Mỗi câu có 4 đáp án.
-* Chỉ có 1 đáp án đúng.
-* topic phải ghi đúng tên bài.
 
-Trả về JSON hợp lệ:
+=====================
+FORMAT BẮT BUỘC
+=====================
+
+Trả về đúng JSON array:
 
 [
-{
-"question":"...",
-"options":["A","B","C","D"],
-"answer":0,
-"topic":"..."
-}
+  {
+    "question": "string",
+    "options": ["A","B","C","D"],
+    "answer": 0,
+    "topic": "${lessonData.tenBai}"
+  }
 ]
 
-KHÔNG giải thích.
-KHÔNG markdown.
-KHÔNG code block.
-CHỈ JSON.
+=====================
+QUY TẮC CUỐI
+=====================
+- Sử dụng 100% Tiếng Việt
+- Không giải thích
+- Không markdown
+- Không thêm text ngoài JSON
+- Nếu không đủ dữ liệu thì vẫn phải tạo đủ câu hỏi
 `;
 
 const response =
@@ -158,13 +172,33 @@ const text =
     ?.replace(/```json/g, "")
     .replace(/```/g, "")
     .trim() || "[]";
-const questions = JSON.parse(text);
+let questions = [];
+
+try {
+  questions = JSON.parse(text);
+} catch {
+  return Response.json({
+    questions: [],
+    error: "AI trả về JSON lỗi"
+  });
+}
+if (!Array.isArray(questions)){
+  questions = [];
+}
 
 const shuffledQuestions = questions.map((q: any) => {
+  if (
+    !q ||
+    !Array.isArray(q.options) ||
+    typeof q.answer !== "number"
+  ) {
+    return null;
+  }
   const correctAnswer = q.options[q.answer];
 
-  const shuffledOptions = [...q.options]
-    .sort(() => Math.random() - 0.5);
+  const shuffledOptions = [...q.options].sort(
+    () => Math.random() - 0.5
+  );
 
   const newAnswer =
     shuffledOptions.indexOf(correctAnswer);
