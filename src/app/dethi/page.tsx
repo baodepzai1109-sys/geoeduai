@@ -21,12 +21,30 @@ import { useEffect } from "react";
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+function cleanText(text: string) {
+  return text
+    .replace(/A\./g, "\nA.")
+    .replace(/B\./g, "\nB.")
+    .replace(/C\./g, "\nC.")
+    .replace(/D\./g, "\nD.");
+}
 export default function TestPage() {
   const [grade, setGrade] = useState("6");
   const [lesson, setLesson] = useState("");
-  const [count, setCount] = useState(10);
+  const [questionTypes, setQuestionTypes] = useState({
+  multiple: true,
+  trueFalse: false,
+  shortAnswer: false,
+  essay: false,
+});
+const [questionCountByType, setQuestionCountByType] = useState({
+  multiple: 10,
+  trueFalse: 0,
+  shortAnswer: 0,
+  essay: 0,
+});
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState("");
+  const [result, setResult] = useState<any>(null);
   const [showWordMenu, setShowWordMenu] = useState(false);
   const [showPdfMenu, setShowPdfMenu] = useState(false);
  const geoMap: Record<string, any> = {
@@ -41,10 +59,10 @@ export default function TestPage() {
 
 const currentLessons = geoMap[grade] || [];
 useEffect(() => {
-  if (currentLessons.length > 0) {
+  if (currentLessons.length > 0 && !lesson) {
     setLesson(currentLessons[0].tenBai);
   }
-}, [grade, currentLessons]);
+}, [grade]);
   async function generateTest() {
     function removeAnswer(text: string) {
   const index = text.indexOf("ĐÁP ÁN");
@@ -65,16 +83,20 @@ useEffect(() => {
               "application/json",
           },
           body: JSON.stringify({
-            grade,
-            lesson,
-            count,
-          }),
+          grade,
+          lesson,
+          questionTypes,
+          questionCountByType,
+        }),
         }
       );
 
-      const data = await res.json();
-
-      setResult(data.answer);
+const data = await res.json();
+setResult(
+  typeof data.answer === "string"
+    ? JSON.parse(data.answer)
+    : data.answer
+);
     } catch {
       setResult(
         "Không thể tạo đề kiểm tra."
@@ -91,65 +113,125 @@ useEffect(() => {
   return text.substring(0, index);
 }
 async function downloadWord() {
-    if (!result) return;
+  if (!result) return;
+
+  const allQuestions = result;
+
+const mcqParagraphs =
+  (allQuestions.mcq || []).flatMap((q: any, i: number) => {
+    const question = q?.question ?? "Không có câu hỏi";
+
+    const opt = q?.options ?? {};
+
+    return [
+      new Paragraph({
+        text: `Câu ${i + 1}: ${question}`,
+      }),
+      new Paragraph({
+        text: `A. ${opt.A ?? ""}`,
+      }),
+      new Paragraph({
+        text: `B. ${opt.B ?? ""}`,
+      }),
+      new Paragraph({
+        text: `C. ${opt.C ?? ""}`,
+      }),
+      new Paragraph({
+        text: `D. ${opt.D ?? ""}`,
+      }),
+      new Paragraph({ text: "" }),
+    ];
+  });
+const tfParagraphs =
+  (allQuestions.trueFalse || []).flatMap((q: any, i: number) => [
+    new Paragraph({ text: `Câu Đ/S ${i + 1}: ${q.question}` }),
+    ...((q.items || []).map((it: string) =>
+      new Paragraph({ text: `- ${it}` })
+    )),
+    new Paragraph({ text: "" }),
+  ]);
+
+const saParagraphs =
+  (allQuestions.shortAnswer || []).map((q: any, i: number) =>
+    new Paragraph({ text: `Câu TL ${i + 1}: ${q.question}` })
+  );
+
+const essayParagraphs =
+  (allQuestions.essay || []).map((q: any, i: number) =>
+    new Paragraph({ text: `Câu TL ${i + 1}: ${q.question}` })
+  );
+  const tfText =
+    allQuestions.trueFalse?.map((q: any, i: number) => {
+      return [
+        `Câu Đ/S ${i + 1}: ${q.question}`,
+        ...q.items.map((it: string) => `- ${it}`),
+        ""
+      ].join("\n");
+    }).join("\n") || "";
+
+  const saText =
+    allQuestions.shortAnswer?.map((q: any, i: number) =>
+      `Câu TL ${i + 1}: ${q.question}\n`
+    ).join("\n") || "";
+
+  const essayText =
+    allQuestions.essay?.map((q: any, i: number) =>
+      `Câu NL ${i + 1}: ${q.question}\n`
+    ).join("\n") || "";
 
   const doc = new Document({
-  sections: [
-    {
-      children: [
+    sections: [
+      {
+        children: [
+          new Paragraph({
+            text: "TRƯỜNG THPT ................................",
+          }),
+          new Paragraph({
+            text: "LỚP: ............",
+          }),
+          new Paragraph({
+            text: "HỌ VÀ TÊN: ................................",
+          }),
 
-  new Paragraph({
-    text: "TRƯỜNG: .................................................",
-  }),
+          new Paragraph(""),
 
-  new Paragraph({
-    text: "LỚP: .....................",
-  }),
+          new Paragraph({
+            text: "ĐỀ KIỂM TRA ĐỊA LÍ",
+            heading: HeadingLevel.HEADING_1,
+            alignment: AlignmentType.CENTER,
+          }),
 
-  new Paragraph({
-    text: "HỌ VÀ TÊN: .................................................",
-  }),
+          new Paragraph({
+            text: "Thời gian: 45 phút",
+            alignment: AlignmentType.CENTER,
+          }),
 
-  new Paragraph(""),
+          new Paragraph(""),
 
-  new Paragraph({
-    text: "ĐỀ KIỂM TRA ĐỊA LÍ",
-    heading: HeadingLevel.HEADING_1,
-    alignment: AlignmentType.CENTER,
-  }),
+          
+        ...mcqParagraphs,
 
-  new Paragraph({
-    text: "Thời gian làm bài: ........ phút",
-    alignment: AlignmentType.CENTER,
-  }),
+          // TRUE/FALSE
+          ...tfParagraphs,
 
-  new Paragraph({
-    text: "────────────────────────────────────────",
-    alignment: AlignmentType.CENTER,
-  }),
+          // SHORT ANSWER
+          ...saParagraphs,
 
-        new Paragraph(""),
+          // ESSAY
+          ...essayParagraphs,
 
-        ...removeAnswer(result)
-  .split("\n")
-  .map(
-    (line) =>
-      new Paragraph({
-        text: line,
-      })
-  )
-      ],
-    },
-  ],
-});
+          new Paragraph(""),
+        ],
+      },
+    ],
+  });
 
   const blob = await Packer.toBlob(doc);
-
   const url = URL.createObjectURL(blob);
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "de-kiem-tra.docx";
+  a.download = "de-thi-dia-li.docx";
   a.click();
 
   URL.revokeObjectURL(url);
@@ -157,85 +239,75 @@ async function downloadWord() {
 function downloadPDF() {
   if (!result) return;
 
-  const docDefinition: any = {
-    content: [
-  {
-    text: "TRƯỜNG: ........................................",
-    margin: [0, 0, 0, 5],
-  },
+  const allQuestions = result;
 
-  {
-    text: "LỚP: .....................",
-    margin: [0, 0, 0, 5],
-  },
+  const content: any[] = [];
 
-  {
-    text: "HỌ VÀ TÊN: ........................................",
-    margin: [0, 0, 0, 15],
-  },
+  content.push(
+    { text: "TRƯỜNG THPT ................................", margin: [0, 0, 0, 5] },
+    { text: "LỚP: ............", margin: [0, 0, 0, 5] },
+    { text: "HỌ VÀ TÊN: ................................", margin: [0, 0, 0, 10] },
 
-  {
-    text: "ĐỀ KIỂM TRA ĐỊA LÍ",
-    style: "title",
-  },
-
-  {
-    text: "Thời gian làm bài: ........ phút",
-    alignment: "center",
-    margin: [0, 0, 0, 15],
-  },
-
-  {
-  canvas: [
     {
-      type: "line",
-      x1: 0,
-      y1: 5,
-      x2: 500,
-      y2: 5,
-      lineWidth: 1,
-    },
-  ],
-  margin: [0, 10, 0, 15],
-},
-
-...removeAnswer(result)
-  .replace(/###/g, "")
-  .split("\n")
-  .map((line) => {
-    if (line.startsWith("Câu")) {
-      return {
-        text: line,
-        style: "question",
-        margin: [0, 10, 0, 4],
-      };
+      text: "ĐỀ KIỂM TRA ĐỊA LÍ",
+      style: "header",
+      alignment: "center",
+      margin: [0, 0, 0, 10],
     }
+  );
 
-    return {
-      text: line,
-      margin: [0, 2, 0, 2],
-    };
-  })
-],
+  // MCQ
+  allQuestions.mcq?.forEach((q: any, i: number) => {
+    content.push({
+      text: `Câu ${i + 1}: ${q.question}`,
+      margin: [0, 10, 0, 5],
+    });
 
-styles: {
-  title: {
-    fontSize: 20,
+    content.push({
+      ul: [
+        `A. ${q.options.A}`,
+        `B. ${q.options.B}`,
+        `C. ${q.options.C}`,
+        `D. ${q.options.D}`,
+      ],
+    });
+  });
+
+  // TrueFalse
+  allQuestions.trueFalse?.forEach((q: any, i: number) => {
+    content.push({
+      text: `Câu Đ/S ${i + 1}: ${q.question}`,
+      margin: [0, 10, 0, 5],
+    });
+
+    content.push({
+      ul: q.items,
+    });
+  });
+
+  // Answer
+  content.push({
+    text: "\nĐÁP ÁN",
     bold: true,
-    alignment: "center",
-    color: "#1d4ed8",
-  },
+    margin: [0, 20, 0, 10],
+  });
 
-  question: {
-    bold: true,
-    fontSize: 12,
-  },
-}
+  content.push({
+    text: JSON.stringify(allQuestions, null, 2),
+    fontSize: 8,
+  });
+
+  const docDefinition: any = {
+    content,
+    styles: {
+      header: {
+        fontSize: 18,
+        bold: true,
+      },
+    },
   };
 
-  pdfMake
-    .createPdf(docDefinition)
-    .download("de-kiem-tra.pdf");
+  pdfMake.createPdf(docDefinition).download("de-thi.pdf");
 }
   return (
     <main
@@ -267,7 +339,7 @@ styles: {
         "
       />
 
-      <div className="relative z-10 max-w-5xl mx-auto p-8">
+      <div className="relative z-10 w-full max-w-[1400px] mx-auto px-6 sm:px-10 py-10">
 
         {/* Header */}
         <div
@@ -326,135 +398,300 @@ styles: {
           p-8
           "
         >
-          <div className="grid md:grid-cols-3 gap-5">
+         <div className="grid grid-cols-1 gap-5">
 
-            {/* Khối */}
-            <div>
-              <label className="text-slate-300 text-sm">
-                Khối
-              </label>
+<div className="grid grid-cols-1 md:grid-cols-2 gap-10 w-full items-stretch">
 
-              <select
-                value={grade}
-                onChange={(e) =>
-                  setGrade(e.target.value)
-                }
-                className="
-                mt-2
-                w-full
-                bg-slate-950
-                border
-                border-blue-500/20
-                rounded-2xl
-                px-4
-                py-3
-                "
-              >
-                <option value="6">
-                  Địa lí 6
-                </option>
-
-                <option value="7">
-                  Địa lí 7
-                </option>
-
-                <option value="8">
-                  Địa lí 8
-                </option>
-
-                <option value="9">
-                  Địa lí 9
-                </option>
-
-                <option value="10">
-                  Địa lí 10
-                </option>
-
-                <option value="11">
-                  Địa lí 11
-                </option>
-
-                <option value="12">
-                  Địa lí 12
-                </option>
-              </select>
-            </div>
-
-            {/* Bài */}
-<div>
-  <label className="text-slate-300 text-sm">
-    Bài học
-  </label>
-
-  <select
-    value={lesson}
-    onChange={(e) =>
-      setLesson(e.target.value)
-    }
+  {/* KHỐI */}
+  <div
     className="
-                mt-2
-                w-full
-                bg-slate-950
-                border
-                border-blue-500/20
-                rounded-2xl
-                px-4
-                py-3
+p-6 rounded-2xl
+w-full
+min-h-[140px]
+
+bg-slate-900/40
+border border-blue-500/20
+backdrop-blur-xl
+
+shadow-[0_0_30px_rgba(59,130,246,0.18)]
+hover:border-blue-400/40
+transition
     "
   >
-    {currentLessons.map((item: any) => (
-      <option
-        key={item.tenBai}
-        value={item.tenBai}
-      >
-        {item.tenBai}
-      </option>
-    ))}
-  </select>
+    <label className="text-slate-300 text-sm font-medium">
+      Khối học
+    </label>
+
+    <select
+      value={grade}
+      onChange={(e) => setGrade(e.target.value)}
+      className="
+      mt-3 w-full
+      px-4 py-3
+      rounded-xl
+      bg-slate-950
+      border border-blue-500/30
+      text-white
+      focus:outline-none
+      focus:border-cyan-400
+      transition
+      "
+    >
+      <option value="6">Địa lí 6</option>
+      <option value="7">Địa lí 7</option>
+      <option value="8">Địa lí 8</option>
+      <option value="9">Địa lí 9</option>
+      <option value="10">Địa lí 10</option>
+      <option value="11">Địa lí 11</option>
+      <option value="12">Địa lí 12</option>
+    </select>
+  </div>
+
+  {/* BÀI HỌC */}
+  <div
+    className="
+p-6 rounded-2xl
+w-full
+min-h-[140px]
+
+bg-slate-900/40
+border border-cyan-500/20
+backdrop-blur-xl
+
+shadow-[0_0_30px_rgba(0,255,255,0.10)]
+hover:border-cyan-400/40
+transition
+    "
+  >
+    <label className="text-slate-300 text-sm font-medium">
+      Bài học
+    </label>
+
+    <select
+      value={lesson}
+      onChange={(e) => setLesson(e.target.value)}
+      className="
+      mt-3 w-full
+      px-4 py-3
+      rounded-xl
+      bg-slate-950
+      border border-cyan-500/30
+      text-white
+      focus:outline-none
+      focus:border-cyan-400
+      transition
+      "
+    >
+      {currentLessons.map((item: any) => (
+        <option key={item.tenBai} value={item.tenBai}>
+          {item.tenBai}
+        </option>
+      ))}
+    </select>
+  </div>
+
 </div>
+<div className="md:col-span-3 mt-4">
+  <label className="text-slate-300 text-sm font-semibold">
+    Loại câu hỏi + số lượng
+  </label>
 
-            {/* Số câu */}
-            <div>
-              <label className="text-slate-300 text-sm">
-                Số câu
-              </label>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
 
-              <select
-                value={count}
-                onChange={(e) =>
-                  setCount(
-                    Number(e.target.value)
-                  )
-                }
-                className="
-                mt-2
-                w-full
-                bg-slate-950
-                border
-                border-blue-500/20
-                rounded-2xl
-                px-4
-                py-3
-                "
-              >
-                <option value={10}>
-                  10 câu
-                </option>
+    {/* MCQ */}
+    <div>
+<label className="
+flex items-center gap-3
+p-3 rounded-xl
+bg-slate-900/60
+border border-blue-500/20
+hover:border-blue-400/40
+transition
+">
+        <input
+          type="checkbox"
+          checked={questionTypes.multiple}
+          onChange={(e) =>
+            setQuestionTypes({
+              ...questionTypes,
+              multiple: e.target.checked,
+            })
+          }
+        />
+        Trắc nghiệm
+      </label>
 
-                <option value={20}>
-                  20 câu
-                </option>
+      {questionTypes.multiple && (
+        <input
+          type="number"
+          value={questionCountByType.multiple}
+          onChange={(e) =>
+            setQuestionCountByType({
+              ...questionCountByType,
+              multiple: Number(e.target.value),
+            })
+          }
+          className="
+mt-2 w-full
+px-3 py-2
+rounded-xl
+bg-slate-950
+border border-blue-500/30
+text-white
+focus:outline-none
+focus:border-cyan-400
+transition
+"
+        />
+      )}
+    </div>
 
-                <option value={30}>
-                  30 câu
-                </option>
+    {/* TRUE FALSE */}
+    <div>
+      <label className="
+flex items-center gap-3
+p-3 rounded-xl
+bg-slate-900/60
+border border-blue-500/20
+hover:border-blue-400/40
+transition
+">
+        <input
+          type="checkbox"
+          checked={questionTypes.trueFalse}
+          onChange={(e) =>
+            setQuestionTypes({
+              ...questionTypes,
+              trueFalse: e.target.checked,
+            })
+          }
+        />
+        Đúng / Sai
+      </label>
 
-                <option value={40}>
-                  40 câu
-                </option>
-              </select>
-            </div>
+      {questionTypes.trueFalse && (
+        <input
+          type="number"
+          value={questionCountByType.trueFalse}
+          onChange={(e) =>
+            setQuestionCountByType({
+              ...questionCountByType,
+              trueFalse: Number(e.target.value),
+            })
+          }
+          className="
+mt-2 w-full
+px-3 py-2
+rounded-xl
+bg-slate-950
+border border-blue-500/30
+text-white
+focus:outline-none
+focus:border-cyan-400
+transition
+"
+        />
+      )}
+    </div>
 
+    {/* SHORT */}
+    <div>
+<label className="
+flex items-center gap-3
+p-3 rounded-xl
+bg-slate-900/60
+border border-blue-500/20
+hover:border-blue-400/40
+transition
+">
+        <input
+          type="checkbox"
+          checked={questionTypes.shortAnswer}
+          onChange={(e) =>
+            setQuestionTypes({
+              ...questionTypes,
+              shortAnswer: e.target.checked,
+            })
+          }
+        />
+        Trả lời ngắn
+      </label>
+
+      {questionTypes.shortAnswer && (
+        <input
+          type="number"
+          value={questionCountByType.shortAnswer}
+          onChange={(e) =>
+            setQuestionCountByType({
+              ...questionCountByType,
+              shortAnswer: Number(e.target.value),
+            })
+          }
+          className="
+mt-2 w-full
+px-3 py-2
+rounded-xl
+bg-slate-950
+border border-blue-500/30
+text-white
+focus:outline-none
+focus:border-cyan-400
+transition
+"
+        />
+      )}
+    </div>
+
+    {/* ESSAY */}
+    <div>
+<label className="
+flex items-center gap-3
+p-3 rounded-xl
+bg-slate-900/60
+border border-blue-500/20
+hover:border-blue-400/40
+transition
+">
+        <input
+          type="checkbox"
+          checked={questionTypes.essay}
+          onChange={(e) =>
+            setQuestionTypes({
+              ...questionTypes,
+              essay: e.target.checked,
+            })
+          }
+        />
+        Tự luận
+      </label>
+
+      {questionTypes.essay && (
+        <input
+          type="number"
+          value={questionCountByType.essay}
+          onChange={(e) =>
+            setQuestionCountByType({
+              ...questionCountByType,
+              essay: Number(e.target.value),
+            })
+          }
+          className="
+mt-2 w-full
+px-3 py-2
+rounded-xl
+bg-slate-950
+border border-blue-500/30
+text-white
+focus:outline-none
+focus:border-cyan-400
+transition
+"
+        />
+      )}
+    </div>
+
+  </div>
+</div>
           </div>
 
           <button
@@ -562,65 +799,77 @@ styles: {
 </button>
 </div>
         {/* Result */}
-        <div
-          className="
-          mt-8
+{/* Result */}
+<div className="mt-8 w-full rounded-3xl border border-blue-500/20 bg-slate-900/40 backdrop-blur-xl p-8">
 
-          rounded-3xl
-          border
-          border-blue-500/20
+  {result ? (
+    <div className="space-y-6">
 
-          bg-slate-900/40
-          backdrop-blur-xl
+      {/* MCQ */}
+      {result.mcq?.map((q: any, i: number) => (
+<div className="p-5 border border-slate-700 rounded-xl w-full">
 
-          p-8
+  <p className="font-bold mb-3 whitespace-pre-wrap break-words leading-relaxed">
+    Câu {i + 1}: {q.question}
+  </p>
 
-          max-w-4xl
-          mx-auto
-          max-h-[700px]
-          overflow-y-auto
-          custom-scroll
-          "
-        >
-          {result ? (
-            <div
-              className="
-  prose
-  prose-invert
-  max-w-none
-  whitespace-pre-wrap
-  prose-headings:text-blue-300
-  prose-strong:text-cyan-300
-"
-            >
+  <div className="ml-4 flex flex-col gap-1">
+    {Object.entries(q.options).map(([key, value]: any) => (
+      <p
+        key={key}
+        className="whitespace-pre-wrap break-words"
+      >
+        {key}. {value}
+      </p>
+    ))}
+  </div>
 
-              <ReactMarkdown
-  remarkPlugins={[remarkGfm]}
->
-  {result
-    .replace(/Câu\s+(\d+)/g, "\n\n Câu $1\n")
-    .replace(/A\./g, "\nA.")
-    .replace(/B\./g, "\nB.")
-    .replace(/C\./g, "\nC.")
-    .replace(/D\./g, "\nD.")
-    .replace(/ĐÁP ÁN/g, "\n\n ĐÁP ÁN\n")}
-</ReactMarkdown>
-            </div>
-          ) : (
-            <div
-              className="
-              h-full
-              flex
-              items-center
-              justify-center
+  <p className="text-green-400 mt-3">
+    Đáp án: {["A","B","C","D"][q.answer]}
+  </p>
 
-              text-slate-500
-              "
-            >
-              Đề kiểm tra sẽ xuất hiện ở đây
-            </div>
-          )}
+</div>
+      ))}
+
+      {/* True/False */}
+      {result.trueFalse?.map((q: any, i: number) => (
+        <div key={i} className="p-4 border border-slate-700 rounded-xl">
+          <p className="font-bold">{q.question}</p>
+
+          <div className="ml-4 mt-2">
+            {q.items.map((item: string, idx: number) => (
+              <p key={idx}>
+                {item} → {String(q.answer[idx])}
+              </p>
+            ))}
+          </div>
         </div>
+      ))}
+
+      {/* Short Answer */}
+      {result.shortAnswer?.map((q: any, i: number) => (
+        <div key={i} className="p-4 border border-slate-700 rounded-xl">
+          <p>{q.question}</p>
+          <p className="text-green-400">Đáp án: {q.answer}</p>
+        </div>
+      ))}
+
+      {/* Essay */}
+      {result.essay?.map((q: any, i: number) => (
+        <div key={i} className="p-4 border border-slate-700 rounded-xl">
+          <p className="font-bold">{q.question}</p>
+          <p className="text-blue-300 mt-2">Gợi ý: {q.hint}</p>
+        </div>
+      ))}
+
+    </div>
+  ) : (
+    <div className="text-slate-500 text-center">
+      Đề kiểm tra sẽ xuất hiện ở đây
+    </div>
+  )}
+
+</div>
 
       </div>
     </main>

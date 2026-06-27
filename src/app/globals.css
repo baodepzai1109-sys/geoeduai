@@ -940,3 +940,14 @@ html::-webkit-scrollbar,
 body::-webkit-scrollbar {
   display: none;
 }
+.whitespace-pre-wrap {
+  white-space: pre-wrap !important;
+}
+
+.break-words {
+  word-break: break-word;
+}
+
+p {
+  display: block;
+}

@@ -7,7 +7,6 @@ import geo9 from "@/data/geo9.json";
 import geo10 from "@/data/geo10.json";
 import geo11 from "@/data/geo11.json";
 import geo12 from "@/data/geo12.json";
-
 const client = new OpenAI({
 apiKey: process.env.GROQ_API_KEY,
 baseURL: "https://api.groq.com/openai/v1",
@@ -49,105 +48,88 @@ if (!lessonData) {
     { status: 400 }
   );
 }
+function getKnowledge(
+  lessonData: any,
+  difficulty: string
+) {
+  const maxFacts =
+    difficulty === "de"
+      ? 2
+      : difficulty === "trungbinh"
+      ? 3
+      : 5;
 
-const prompt = `
-Bạn là giáo viên Địa lí.
-
-CHỈ sử dụng dữ liệu dưới đây để tạo câu hỏi.
-
-=====================
-DỮ LIỆU
-=====================
-
-Tên bài:
-${lessonData.tenBai}
-
-Kiến thức:
-${lessonData.kienThucChinh.map((k:any)=>"- " + k.noiDung).join("\n")}
-
-Từ khóa:
-${lessonData.tuKhoa.join(", ")}
-
-=====================
-YÊU CẦU BẮT BUỘC
-=====================
-
-- Tạo đúng ${count} câu hỏi trắc nghiệm
-- Mỗi câu có đúng 4 đáp án
-- Chỉ 1 đáp án đúng
-- answer là số (0–3)
-- topic luôn là tên bài
-- KHÔNG được thêm thông tin ngoài dữ liệu
-- KHÔNG giải thích
-- KHÔNG markdown
-- CHỈ trả về JSON hợp lệ
-- Không được có chữ ngoài JSON
-- Nếu không chắc, vẫn phải tạo đủ ${count} câu
-
-=====================
-QUY TẮC QUAN TRỌNG
-=====================
-
-- Không được lặp lại cùng một ý hỏi giữa các câu
-- Mỗi câu hỏi phải khác cách diễn đạt
-- Không được copy nguyên câu từ dữ liệu
-- Phải tự biến đổi cách hỏi
-
-=====================
-ĐỘ KHÓ (PHÂN BIỆT RÕ RÀNG)
-=====================
-
-${difficulty === "de"
-? `
-DỄ:
-- Chỉ hỏi 1 ý duy nhất trong dữ liệu
-- Câu hỏi dạng nhận biết hoặc định nghĩa
-- Không kết hợp nhiều thông tin
-- Không yêu cầu suy luận
-- Câu hỏi phải ngắn và trực tiếp
-`
-: difficulty === "trungbinh"
-? `
-TRUNG BÌNH:
-- Kết hợp 2 ý trong dữ liệu để hỏi
-- Yêu cầu hiểu nội dung bài học
-- Có nhiễu nhẹ giữa các đáp án
-- Có thể so sánh hoặc liên hệ đơn giản
-`
-: `
-KHÓ:
-- Kết hợp từ 2 đến 3 ý khác nhau trong bài
-- Câu hỏi yêu cầu phân tích hoặc suy luận nhẹ
-- Không được hỏi trực tiếp từ một dòng kiến thức
-- Phải biến đổi cách hỏi (không được giống EASY hoặc MEDIUM)
-- Đáp án gây nhiễu nhưng vẫn rõ ràng
-- Tuyệt đối không vượt ngoài dữ liệu
-`
+  return lessonData.kienThucChinh
+    .slice(0, maxFacts)
+    .map((item: any) => item.noiDung);
 }
 
-=====================
-FORMAT BẮT BUỘC
-=====================
+const facts = getKnowledge(lessonData, difficulty);
 
-Trả về đúng JSON array:
+const context = {
+  lesson: lessonData.tenBai,
+  keywords: lessonData.tuKhoa,
+  facts,
+};
+const difficultyRule =
+  difficulty === "de"
+    ? `
+Độ khó: Dễ.
+- Mỗi câu chỉ kiểm tra 1 fact.
+- Dạng nhận biết hoặc định nghĩa.
+- Không suy luận.
+`
+    : difficulty === "trungbinh"
+    ? `
+Độ khó: Trung bình.
+- Mỗi câu kết hợp đúng 2 facts.
+- Yêu cầu hiểu và liên hệ đơn giản.
+- Đáp án nhiễu hợp lí nhưng dễ phân biệt.
+`
+    : `
+Độ khó: Khó.
+- Mỗi câu kết hợp 2-3 facts.
+- Không hỏi trực tiếp theo nguyên văn.
+- Buộc người học phải phân tích hoặc suy luận từ các facts.
+- Có thể yêu cầu so sánh, tổng hợp hoặc xác định mối liên hệ giữa các facts.
+- Đáp án nhiễu phải hợp lí và gần đúng, nhưng chỉ có 1 đáp án chính xác.
+- Không sử dụng kiến thức ngoài dữ liệu.
+`;
+
+const prompt = `
+Bạn là AI tạo câu hỏi Địa lí.
+
+Dữ liệu:
+${JSON.stringify(context)}
+
+Tạo đúng ${count} câu hỏi.
+
+Quy tắc:
+- Chỉ dùng dữ liệu trên.
+- Không tự bổ sung kiến thức.
+- Không lặp lại ý hỏi.
+- Không sao chép nguyên văn.
+- Viết lại bằng cách diễn đạt khác.
+${difficultyRule}
+
+Mỗi câu gồm:
+- question
+- options (4 đáp án)
+- answer (0-3)
+- topic = "${lessonData.tenBai}"
+
+Chỉ trả về JSON Array.
+
+Ví dụ:
 
 [
   {
-    "question": "string",
-    "options": ["A","B","C","D"],
-    "answer": 0,
-    "topic": "${lessonData.tenBai}"
+    "question":"...",
+    "options":["A","B","C","D"],
+    "answer":0,
+    "topic":"${lessonData.tenBai}"
   }
 ]
-
-=====================
-QUY TẮC CUỐI
-=====================
-- Sử dụng 100% Tiếng Việt
-- Không giải thích
-- Không markdown
-- Không thêm text ngoài JSON
-- Nếu không đủ dữ liệu thì vẫn phải tạo đủ câu hỏi
 `;
 
 const response =
@@ -172,6 +154,9 @@ const text =
     ?.replace(/```json/g, "")
     .replace(/```/g, "")
     .trim() || "[]";
+console.log("========== AI RAW ==========");
+console.log(text);
+console.log("============================");
 let questions = [];
 
 try {
