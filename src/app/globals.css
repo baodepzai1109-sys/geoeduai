@@ -951,3 +951,25 @@ body::-webkit-scrollbar {
 p {
   display: block;
 }
+.glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #070B1A;
+  --panel: #0B1228;
+  --panel2: #0F1A3A;
+  --border: #1C2A52;
+
+  --primary: #3B82F6;
+  --text: #E5E7EB;
+  --muted: #94A3B8;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+}

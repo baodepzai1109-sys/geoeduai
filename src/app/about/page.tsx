@@ -1,6 +1,7 @@
 "use client";
 import ResponsiveLayout from "@/components/ResponsiveLayout";
 import Image from "next/image";
+
 export default function AboutPage() {
 return ( <main className="min-h-screen bg-gradient-to-br from-slate-950 via-[#071a3b] to-slate-950 text-white overflow-hidden">
 

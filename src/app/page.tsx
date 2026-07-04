@@ -185,7 +185,7 @@ export default function HomePage() {
 </h1>
 
 <p className=" mt-5 text-lg text-blue-300 font-semibold tracking-wide " >
-  Nền tảng trí tuệ nhân tạo hỗ trợ giảng dạy và học tập Địa lí Việt Nam
+  Nền tảng trí tuệ nhân tạo hỗ trợ giảng dạy và học tập Địa lí Việt Nam theo chương trình GDPT 2018 sau sắp xếp đơn vị hành chính cấp tỉnh
 </p>
 
 <p className=" mt-5 text-xl text-slate-300 leading-relaxed max-w-[650px] " >
@@ -386,6 +386,16 @@ if (item.title === "Quiz Địa Lí") {
     </Link>
   );
 }
+  if (item.title === "Thư viện Atlat") {
+    return (
+      <Link
+        key={item.title}
+        href="/atlat"
+      >
+        {content}
+      </Link>
+    );
+  }
   return (
     <div key={item.title}>
       {content}
@@ -481,22 +491,22 @@ if (item.title === "Quiz Địa Lí") {
       Liên hệ
     </h2>
 
-    <div
-      className="
-      mt-6
-      space-y-3
-      text-slate-300
-      text-base md:text-lg
-      "
-    >
-      <p>👤 Dương Thiên Bảo</p>
+    {/* Thêm thẻ div cha này bọc bên ngoài 2 khối của bạn */}
+<div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 max-w-2xl">
 
-      <p>📧 baodepzai1109@gmail.com</p>
+  <div className="mt-6 space-y-3 text-slate-300 text-base md:text-lg">
+    <p>Tác giả: Dương Thiên Bảo</p>
+    <p>Email: baodepzai1109@gmail.com</p>
+    <p>Số điện thoại: 0123 456 789</p>
+  </div>
 
-      <p>📱 0123 456 789</p>
+  <div className="mt-6 space-y-3 text-slate-300 text-base md:text-lg">
+    <p>Tác giả: Skibidi</p>
+    <p>Email: baodepzai1109@gmail.com</p>
+    <p>Số điện thoại: 0123 456 789</p>
+  </div>
 
-      <p>🌍 GeoEdu AI Project</p>
-    </div>
+</div>
   </div>
 </section>
     </main>

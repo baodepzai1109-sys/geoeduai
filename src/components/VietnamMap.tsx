@@ -320,46 +320,28 @@ layer.bindPopup(
       </div>
 
       <!-- LOGO TỈNH -->
+<!-- LOGO TỈNH -->
 <div style="
-width:85px;
-height:85px;
-
-  background:
-    radial-gradient(
-      circle,
-      rgba(59,130,246,.18),
-      rgba(59,130,246,.03)
-    );
-
-  border:1px solid rgba(59,130,246,.45);
-
+  width:85px;
+  height:85px;
   border-radius:18px;
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
-
   overflow:hidden;
-
-  box-shadow:
-    0 0 25px rgba(59,130,246,.25);
+  position:relative;
+  border:1px solid rgba(59,130,246,.45);
+  background:radial-gradient(circle, rgba(59,130,246,.18), rgba(59,130,246,.03));
+  box-shadow:0 0 25px rgba(59,130,246,.25);
 ">
 
   <img
     src="/logos/${provinceName}.png"
     alt="${provinceName}"
-
     onerror="this.style.display='none'"
-
     style="
-      width:90%;
-      height:90%;
-      object-fit:contain;
-
-      filter:
-        drop-shadow(
-          0 0 12px rgba(255,255,255,.25)
-        );
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      border-radius:18px;
+      display:block;
     "
   />
 

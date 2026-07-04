@@ -284,19 +284,6 @@ function downloadPDF() {
       ul: q.items,
     });
   });
-
-  // Answer
-  content.push({
-    text: "\nĐÁP ÁN",
-    bold: true,
-    margin: [0, 20, 0, 10],
-  });
-
-  content.push({
-    text: JSON.stringify(allQuestions, null, 2),
-    fontSize: 8,
-  });
-
   const docDefinition: any = {
     content,
     styles: {
