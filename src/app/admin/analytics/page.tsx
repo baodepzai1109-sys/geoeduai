@@ -1,26 +1,36 @@
+// app/admin/safe/page.tsx
+
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
-export default function SafePage({ title = "Safe Page" }: { title?: string }) {
+export default function SafePage() {
   return (
     <main style={styles.container}>
-      <h1 style={styles.title}>🛡️ {title}</h1>
+      <h1 style={styles.title}>🛡️ Safe Admin Page</h1>
 
       <p style={styles.text}>
-        Trang này đang chạy chế độ <b>dynamic runtime</b>, không build static,
-        nên sẽ không gây timeout khi deploy Vercel.
+        Trang này chạy hoàn toàn ở chế độ <b>dynamic runtime</b>,
+        không bị static generation nên không gây timeout khi deploy Vercel.
       </p>
 
       <div style={styles.card}>
-        <h2>✔ Trạng thái</h2>
+        <h2>✔ Hệ thống</h2>
         <ul>
-          <li>Dynamic Rendering (SSR)</li>
-          <li>No Static Generation</li>
-          <li>No Cache Fetch</li>
-          <li>Deploy-safe template</li>
+          <li>Next.js 14 App Router</li>
+          <li>Server-side rendering (SSR)</li>
+          <li>No static generation</li>
+          <li>No fetch cache</li>
+          <li>Deploy-safe structure</li>
         </ul>
       </div>
+
+      <button
+        style={styles.button}
+        onClick={() => alert("Page hoạt động bình thường 🚀")}
+      >
+        Test
+      </button>
     </main>
   );
 }
@@ -40,7 +50,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 
   title: {
-    fontSize: "28px",
+    fontSize: "30px",
     fontWeight: "bold",
   },
 
@@ -56,5 +66,16 @@ const styles: { [key: string]: React.CSSProperties } = {
     borderRadius: "12px",
     width: "100%",
     maxWidth: "500px",
+  },
+
+  button: {
+    marginTop: "10px",
+    padding: "10px 16px",
+    borderRadius: "8px",
+    border: "none",
+    cursor: "pointer",
+    backgroundColor: "#3b82f6",
+    color: "white",
+    fontWeight: "bold",
   },
 };
