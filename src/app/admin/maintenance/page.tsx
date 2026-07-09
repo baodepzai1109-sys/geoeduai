@@ -1,5 +1,5 @@
 "use client";
-
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import {
   Wrench,
@@ -23,7 +23,12 @@ export default function MaintenancePage() {
   const [finishTime, setFinishTime] =
     useState("04/07/2026 22:30");
 const [saving, setSaving] = useState(false);
-
+const [toast, setToast] = useState({
+  show: false,
+  title: "",
+  message: "",
+  type: "success" as "success" | "error",
+});
 useEffect(() => {
   loadMaintenance();
 }, []);
@@ -37,7 +42,25 @@ async function loadMaintenance() {
   setDescription(data.description);
   setFinishTime(data.finish_time);
 }
+function showToast(
+  type: "success" | "error",
+  title: string,
+  message: string
+) {
+  setToast({
+    show: true,
+    title,
+    message,
+    type,
+  });
 
+  setTimeout(() => {
+    setToast((old) => ({
+      ...old,
+      show: false,
+    }));
+  }, 3000);
+}
 async function saveMaintenance() {
   try {
     setSaving(true);
@@ -59,11 +82,24 @@ async function saveMaintenance() {
       throw new Error();
     }
 
-    alert("Đã lưu thành công");
-    window.location.reload();
+    showToast(
+      "success",
+      "Đã lưu thành công",
+      "Cấu hình bảo trì đã được cập nhật."
+    );
+
+    await loadMaintenance();
+
   } catch (e) {
-    alert("Lưu thất bại");
+
+    showToast(
+      "error",
+      "Lưu thất bại",
+      "Không thể lưu cấu hình."
+    );
+
     console.error(e);
+
   } finally {
     setSaving(false);
   }
@@ -349,7 +385,94 @@ async function saveMaintenance() {
         </div>
 
       </div>
+<AnimatePresence>
+  {toast.show && (
+    <motion.div
+      initial={{
+        opacity: 0,
+        y: 40,
+        scale: 0.9,
+      }}
+      animate={{
+        opacity: 1,
+        y: 0,
+        scale: 1,
+      }}
+      exit={{
+        opacity: 0,
+        y: 40,
+        scale: 0.9,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 350,
+        damping: 25,
+      }}
+      className="fixed bottom-8 right-8 z-50"
+    >
+      <div
+        className={`w-[380px] overflow-hidden rounded-3xl border shadow-2xl backdrop-blur-xl ${
+          toast.type === "success"
+            ? "border-green-500/30 bg-[#08101F]"
+            : "border-red-500/30 bg-[#08101F]"
+        }`}
+      >
+        <div className="flex items-center gap-4 p-6">
 
+          <motion.div
+            initial={{ rotate: -25 }}
+            animate={{ rotate: 0 }}
+            transition={{
+              delay: 0.15,
+              type: "spring",
+            }}
+            className={`flex h-12 w-12 items-center justify-center rounded-2xl ${
+              toast.type === "success"
+                ? "bg-green-500"
+                : "bg-red-500"
+            }`}
+          >
+            {toast.type === "success" ? (
+              <Save size={22} />
+            ) : (
+              <ShieldAlert size={22} />
+            )}
+          </motion.div>
+
+          <div>
+
+            <div className="font-bold text-lg">
+              {toast.title}
+            </div>
+
+            <div className="mt-1 text-gray-400">
+              {toast.message}
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Progress Bar */}
+
+        <motion.div
+          initial={{ width: "100%" }}
+          animate={{ width: 0 }}
+          transition={{
+            duration: 3,
+            ease: "linear",
+          }}
+          className={`h-1 ${
+            toast.type === "success"
+              ? "bg-green-500"
+              : "bg-red-500"
+          }`}
+        />
+
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
     </div>
   );
 }

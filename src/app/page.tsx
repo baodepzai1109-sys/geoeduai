@@ -15,14 +15,14 @@ export default function HomePage() {
       desc: "Hỏi đáp kiến thức địa lí Việt Nam",
     },
     {
-      icon: "/quiz-logo.png",
-      title: "Quiz Địa Lí",
-      desc: "Hơn 1000+ câu hỏi Địa lí theo chương trình THCS và THPT.",
+      icon: "/quizznexam.png",
+      title: "Quiz & Exam",
+      desc: "Luyện tập với ngân hàng hơn 1.000+ câu hỏi Địa lí và tạo đề kiểm tra thông minh bằng AI theo Chương trình Giáo dục phổ thông.",
     },
     {
-      icon: "/test-generator-logo.png",
-      title: "AI Tạo Đề Kiểm Tra",
-      desc: "Tạo đề trắc nghiệm theo chương trình GDPT",
+      icon: "/baotri.png",
+      title: "Đang Bảo Trì",
+      desc: "Tính năng đang được cập nhật vui lòng chờ đợi!",
     },
     {
       icon: "/atlas-library-logo.png",
@@ -376,11 +376,11 @@ if (item.title === "AI Tạo Đề Kiểm Tra") {
     </Link>
   );
 }
-if (item.title === "Quiz Địa Lí") {
+if (item.title === "Quiz & Exam") {
   return (
     <Link
       key={item.title}
-      href="/quizz"
+      href="/quizznexam"
     >
       {content}
     </Link>

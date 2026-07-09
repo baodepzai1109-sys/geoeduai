@@ -1,5 +1,8 @@
 "use client";
+
 import { ReactNode, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   LayoutDashboard,
@@ -14,10 +17,13 @@ import {
   Bell,
   Search,
   ChevronLeft,
+  ChevronDown,
+  ChevronRight,
   UserCircle2,
+  UserPlus,
+  Bot,
+  FileText,
 } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 export default function AdminLayout({
   children,
@@ -25,50 +31,95 @@ export default function AdminLayout({
   children: ReactNode;
 }) {
   const pathname = usePathname();
-    
+    const [openMenus, setOpenMenus] = useState<string[]>([
+  "Users",
+]);
+
+function toggleMenu(title: string) {
+  setOpenMenus((prev) =>
+    prev.includes(title)
+      ? prev.filter((m) => m !== title)
+      : [...prev, title]
+  );
+}
   const [collapse, setCollapse] = useState(false);
 
   const menus = [
-    {
-      name: "Dashboard",
-      href: "/admin/dashboard",
-      icon: LayoutDashboard,
-    },
-    {
-      name: "Analytics",
-      href: "/admin/analytics",
-      icon: BarChart3,
-    },
-    {
-      name: "Users",
-      href: "/admin/users",
-      icon: Users,
-    },
-    {
-      name: "AI",
-      href: "/admin/ai",
-      icon: BrainCircuit,
-    },
-    {
-      name: "Forum",
-      href: "/admin/forum",
-      icon: MessageSquare,
-    },
-    {
-      name: "Maintenance",
-      href: "/admin/maintenance",
-      icon: Wrench,
-    },
-    {
-      name: "Logs",
-      href: "/admin/logs",
-      icon: ScrollText,
-    },
-    {
-      name: "Settings",
-      href: "/admin/settings",
-      icon: Settings,
-    },
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/admin/dashboard",
+  },
+
+  {
+    title: "Analytics",
+    icon: BarChart3,
+    href: "/admin/analytics",
+  },
+
+  {
+    title: "Users",
+    icon: Users,
+
+    children: [
+      {
+        title: "All Users",
+        icon: UserCircle2,
+        href: "/admin/users",
+      },
+      {
+        title: "Create User",
+        icon: UserPlus,
+        href: "/admin/users/create",
+      },
+    ],
+  },
+
+  {
+    title: "AI",
+
+    icon: BrainCircuit,
+
+    children: [
+      {
+        title: "AI Dashboard",
+        icon: Bot,
+        href: "/admin/ai",
+      },
+    ],
+  },
+
+  {
+    title: "Forum",
+
+    icon: MessageSquare,
+
+    children: [
+      {
+        title: "Posts",
+        icon: FileText,
+        href: "/admin/forum",
+      },
+    ],
+  },
+
+  {
+    title: "Maintenance",
+    icon: Wrench,
+    href: "/admin/maintenance",
+  },
+
+  {
+    title: "Logs",
+    icon: ScrollText,
+    href: "/admin/logs",
+  },
+
+  {
+    title: "Settings",
+    icon: Settings,
+    href: "/admin/settings",
+  },
   ];
 
   return (
@@ -77,23 +128,48 @@ export default function AdminLayout({
       {/* Sidebar */}
 
       <aside
-        className={`transition-all duration-300 border-r border-[#1E2C54]
-        ${
-          collapse ? "w-24" : "w-72"
-        } bg-[#08101F]`}
-      >
-        <div className="flex h-20 items-center justify-between px-6">
+  className={`
+    ${
+      collapse ? "w-24" : "w-72"
+    }
+    relative
+    transition-all
+    duration-300
+    border-r
+    border-white/10
+    bg-gradient-to-b
+    from-[#08101F]
+    via-[#0B1228]
+    to-[#050816]
+    shadow-2xl
+    shadow-blue-900/20
+  `}
+>
+<div className="flex items-center gap-4">
 
-          {!collapse && (
-            <div>
-              <h1 className="text-2xl font-bold">
-                GeoEduAI
-              </h1>
+  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-700 font-black shadow-lg shadow-cyan-500/30">
 
-              <p className="text-xs text-blue-400">
-                ADMIN PANEL
-              </p>
-            </div>
+    G
+
+  </div>
+
+  {!collapse && (
+
+    <div>
+
+      <h1 className="text-2xl font-black">
+
+        GeoEduAI
+
+      </h1>
+
+      <p className="text-xs uppercase tracking-[4px] text-cyan-400">
+
+        ADMIN PANEL
+
+      </p>
+
+    </div>
           )}
 
           <button
@@ -111,33 +187,125 @@ export default function AdminLayout({
         <div className="px-4">
 
           {menus.map((item) => {
+  const Icon = item.icon;
 
-            const Icon = item.icon;
+  // Menu có submenu
+  if ("children" in item) {
+    const opened = openMenus.includes(item.title);
 
-            const active = pathname === item.href;
+    return (
+      <div key={item.title} className="mb-2">
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`mb-2 flex items-center rounded-xl px-4 py-3 transition
+        <button
+          onClick={() => toggleMenu(item.title)}
+          className="flex w-full items-center justify-between rounded-xl px-4 py-3 text-gray-300 transition hover:bg-white/5"
+        >
 
-                ${
-                  active
-                    ? "bg-blue-600 text-white"
-                    : "hover:bg-white/5 text-gray-300"
-                }`}
-              >
-                <Icon size={20} />
+          <div className="flex items-center">
 
-                {!collapse && (
+            <Icon size={20} />
+
+            {!collapse && (
+              <span className="ml-3">
+                {item.title}
+              </span>
+            )}
+
+          </div>
+
+          {!collapse && (
+            opened ? (
+              <ChevronDown size={18} />
+            ) : (
+              <ChevronRight size={18} />
+            )
+          )}
+
+        </button>
+
+        {!collapse && opened && (
+
+          <div className="ml-6 mt-2 space-y-2 border-l border-[#22345B] pl-4">
+
+            {(item.children ?? []).map((child) => {
+
+              const ChildIcon = child.icon;
+
+              const active =
+                pathname === child.href;
+
+              return (
+
+                <Link
+                  key={child.href}
+                  href={child.href}
+                  className={`flex items-center rounded-xl px-4 py-3 transition
+
+                  ${
+                    active
+                      ? "bg-blue-600 text-white"
+                      : "text-gray-400 hover:bg-white/5"
+                  }`}
+                >
+
+                  <ChildIcon size={18} />
+
                   <span className="ml-3">
-                    {item.name}
+
+                    {child.title}
+
                   </span>
-                )}
-              </Link>
-            );
-          })}
+
+                </Link>
+
+              );
+
+            })}
+
+          </div>
+
+        )}
+
+      </div>
+    );
+  }
+
+  // Menu bình thường
+
+  const active =
+    pathname === item.href;
+
+  return (
+
+    <Link
+      key={item.href}
+      href={item.href}
+      className={`mb-2 flex items-center rounded-xl px-4 py-3 transition
+
+      ${
+        active
+          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/20"
+          : "text-gray-300 hover:bg-white/5"
+      }`}
+    >
+
+      <Icon size={20} />
+
+      {!collapse && (
+
+        <span className="ml-3">
+
+          {item.title}
+
+        </span>
+
+      )}
+
+    </Link>
+
+  );
+
+})}
         </div>
 
       </aside>
