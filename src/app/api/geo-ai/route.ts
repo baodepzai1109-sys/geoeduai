@@ -141,10 +141,24 @@ if (
 }
 const provinceNames = Object.keys(provinceInfo);
 const isListRequest =
+  (q.includes("bao nhieu") &&
+    (q.includes("tinh") || q.includes("tinh thanh"))) ||
+
   q.includes("34 tinh") ||
+
   q.includes("danh sach tinh") ||
+
+  q.includes("liet ke") ||
+
   q.includes("ke ten") ||
-  q.includes("tinh thanh viet nam");
+
+  q.includes("tat ca tinh") ||
+
+  q.includes("tinh thanh viet nam") ||
+
+  q.includes("viet nam co bao nhieu tinh") ||
+
+  q.includes("viet nam co bao nhieu tinh thanh");
 const faqAnswer = retrieveFAQ(question);
 const isProvinceQuestion =
   retrieveProvince(question).length > 0;
