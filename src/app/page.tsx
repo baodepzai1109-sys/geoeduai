@@ -366,11 +366,11 @@ className="
       </Link>
     );
   }
-if (item.title === "AI Tạo Đề Kiểm Tra") {
+if (item.title === "Đang Bảo Trì") {
   return (
     <Link
       key={item.title}
-      href="/dethi"
+      href="/community"
     >
       {content}
     </Link>

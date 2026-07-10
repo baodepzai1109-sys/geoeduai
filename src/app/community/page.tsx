@@ -1,7 +1,8 @@
 "use client";
-
+import CreatePostModal from "@/components/community/CreatePostModal";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
 
 import {
   Home,
@@ -20,32 +21,141 @@ import {
   Map,
   BarChart3,
   Smile,
+  MoreHorizontal,
+  Pencil,
+  Link2,
+  Flag,
+  Trash2,
   Sun,
   Moon,
 } from "lucide-react";
 
 type Post = {
-  id: number;
-  author: string;
-  avatar: string;
-  category: string;
-  time: string;
-  title: string;
-  content: string;
-  image: string;
-  likes: number;
-  comments: number;
+    id: string;
+    title: string;
+    content: string;
+    author: string;
+    images: string[];
+    created_at: string;
 };
 
 export default function CommunityPage() {
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("Thảo luận chung");
+  const [openCreatePost, setOpenCreatePost] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
+const [content, setContent] = useState("");
+const [previewImage, setPreviewImage] = useState<string | null>(null);
+const [images, setImages] = useState<File[]>([]);
+const [deletePostId, setDeletePostId] = useState<string | null>(null);
+const [deleting, setDeleting] = useState(false);
+const [openMenu, setOpenMenu] = useState<string | null>(null);
+const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(false);
+async function loadPosts() {
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("created_at", { ascending: false }); // mới nhất lên đầu
 
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  setPosts(data ?? []);
+}
+async function createPost() {
+  if (!title.trim() || !content.trim()) {
+    alert("Vui lòng nhập tiêu đề và nội dung.");
+    return;
+  }
+
+  setLoading(true);
+const imageUrls: string[] = [];
+
+for (const image of images) {
+
+  const ext = image.name.split(".").pop();
+
+  const fileName =
+    `${Date.now()}-${Math.random()
+      .toString(36)
+      .substring(2)}.${ext}`;
+
+    const { error: uploadError } =
+        await supabase.storage
+            .from("post-image")
+            .upload(fileName, image);
+
+    if (uploadError) {
+        alert(uploadError.message);
+        setLoading(false);
+        return;
+    }
+
+    const { data } =
+        supabase.storage
+            .from("post-image")
+            .getPublicUrl(fileName);
+
+    imageUrls.push(data.publicUrl);
+}
+  const { error } = await supabase
+    .from("posts")
+    .insert([
+      {
+    title,
+    content,
+    author:"Thiên Bảo",
+    category, 
+    avatar:"/avatar.png",
+    images:imageUrls,
+    likes:0,
+    comments:0,
+
+      },
+    ]);
+  setLoading(false);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  setTitle("");
+  setContent("");
+setImages([]);
+  await loadPosts();
+}
+async function deletePost() {
+    if (!deletePostId) return;
+
+    setDeleting(true);
+
+    const { error } = await supabase
+        .from("posts")
+        .delete()
+        .eq("id", deletePostId);
+ console.log("Delete error:", error);
+    setDeleting(false);
+
+    if (error) {
+        alert(error.message);
+        return;
+    }
+
+    setDeletePostId(null);
+
+    await loadPosts();
+}
   useEffect(() => {
     const saved = localStorage.getItem("geoedu-theme");
     if (saved === "dark") {
       setDarkMode(true);
     }
+     loadPosts();
   }, []);
 
   useEffect(() => {
@@ -55,48 +165,7 @@ export default function CommunityPage() {
     );
   }, [darkMode]);
 
-  const posts: Post[] = [
-    {
-      id: 1,
-      author: "Minh Anh",
-      avatar: "/avatar1.jpg",
-      category: "Địa lí tự nhiên",
-      time: "2 giờ trước",
-      title: "Vì sao Tây Nguyên có khí hậu phân hóa theo độ cao?",
-      content:
-        "Mình đang học bài về khí hậu nhưng chưa hiểu rõ nguyên nhân khí hậu Tây Nguyên thay đổi theo độ cao.",
-      image: "/taynguyen.jpg",
-      likes: 45,
-      comments: 23,
-    },
-    {
-      id: 2,
-      author: "Gia Bảo",
-      avatar: "/avatar2.jpg",
-      category: "Atlas Địa lí",
-      time: "4 giờ trước",
-      title: "Có mẹo đọc Atlat nhanh khi đi thi THPT không?",
-      content:
-        "Mình mất khá nhiều thời gian tìm trang Atlat. Có ai có kinh nghiệm chia sẻ không?",
-      image: "/atlas17.jpg",
-      likes: 28,
-      comments: 12,
-    },
-    {
-      id: 3,
-      author: "Hoàng Nam",
-      avatar: "/avatar3.jpg",
-      category: "Luyện thi THPT",
-      time: "Hôm qua",
-      title: "Xin kinh nghiệm đạt 9+ môn Địa lí",
-      content:
-        "Các anh chị khóa trước có thể chia sẻ cách học hiệu quả trong 3 tháng cuối không?",
-      image: "",
-      likes: 81,
-      comments: 31,
-    },
-  ];
-
+  const [posts, setPosts] = useState<any[]>([]);
   return (
     <main
       className={`min-h-screen transition-all duration-500 ${
@@ -166,10 +235,13 @@ export default function CommunityPage() {
 
           <div className="flex items-center gap-3">
 
-            <button className="flex items-center gap-2 rounded-xl bg-[#1565C0] px-6 py-3 font-semibold text-white transition hover:bg-[#0D47A1]">
-              <Plus size={18} />
-              Tạo bài viết
-            </button>
+<button
+    onClick={() => setOpenModal(true)}
+    className="flex items-center gap-2 rounded-xl bg-[#1565C0] px-6 py-3 font-semibold text-white transition hover:bg-[#0D47A1]"
+>
+    <Plus size={18} />
+    Tạo bài viết
+</button>
 
             <button
               className={`flex h-11 w-11 items-center justify-center rounded-full ${
@@ -406,15 +478,16 @@ export default function CommunityPage() {
                 className="rounded-full"
               />
 
-              <button
-                className={`flex-1 rounded-full px-6 py-4 text-left transition ${
-                  darkMode
-                    ? "bg-[#133462] text-slate-300 hover:bg-[#1B4D8F]"
-                    : "bg-[#F5F7FC] text-gray-500 hover:bg-[#EDF2FA]"
-                }`}
-              >
-                Bạn đang thắc mắc điều gì về Địa lí?
-              </button>
+<button
+    onClick={() => setOpenModal(true)}
+    className={`flex-1 rounded-full px-6 py-4 text-left transition ${
+        darkMode
+            ? "bg-[#133462] text-slate-300 hover:bg-[#1B4D8F]"
+            : "bg-[#F5F7FC] text-gray-500 hover:bg-[#EDF2FA]"
+    }`}
+>
+    Bạn đang thắc mắc điều gì về Địa lí?
+</button>
 
             </div>
 
@@ -470,9 +543,13 @@ export default function CommunityPage() {
                 Cảm xúc
               </button>
 
-              <button className="rounded-xl bg-[#1565C0] px-8 py-3 font-semibold text-white transition hover:bg-[#0D47A1]">
-                Đăng bài
-              </button>
+<button
+    onClick={createPost}
+    disabled={loading}
+    className="rounded-xl bg-[#1565C0] px-8 py-3 text-white"
+>
+    {loading ? "Đang đăng..." : "Đăng bài"}
+</button>
 
             </div>
 
@@ -556,22 +633,93 @@ export default function CommunityPage() {
                             : "text-gray-500"
                         }`}
                       >
-                        {post.time}
+                        {new Date(post.created_at).toLocaleString("vi-VN")}
                       </p>
 
                     </div>
 
                   </div>
 
-                  <button
-                    className={`rounded-xl p-2 transition ${
-                      darkMode
-                        ? "hover:bg-[#133462]"
-                        : "hover:bg-gray-100"
-                    }`}
-                  >
-                    ⋯
-                  </button>
+                  <div className="relative">
+
+  <button
+    onClick={() =>
+      setOpenMenu(openMenu === post.id ? null : post.id)
+    }
+    className={`rounded-xl p-2 transition ${
+      darkMode
+        ? "hover:bg-[#133462]"
+        : "hover:bg-gray-100"
+    }`}
+  >
+    ⋯
+  </button>
+
+  {openMenu === post.id && (
+
+    <div
+      className={`absolute right-0 top-12 z-50 w-64 overflow-hidden rounded-2xl border shadow-2xl ${
+        darkMode
+          ? "border-blue-900 bg-[#10294F]"
+          : "border-gray-200 bg-white"
+      }`}
+    >
+
+     <button
+  className={`flex w-full items-center gap-3 px-5 py-3 transition ${
+    darkMode
+      ? "hover:bg-[#163A67]"
+      : "hover:bg-blue-50"
+  }`}
+>
+  <Pencil size={18} />
+  <span>Chỉnh sửa bài viết</span>
+</button>
+
+<button
+  className={`flex w-full items-center gap-3 px-5 py-3 transition ${
+    darkMode
+      ? "hover:bg-[#163A67]"
+      : "hover:bg-blue-50"
+  }`}
+>
+  <Link2 size={18} />
+  <span>Sao chép liên kết</span>
+</button>
+
+<button
+  className={`flex w-full items-center gap-3 px-5 py-3 transition ${
+    darkMode
+      ? "hover:bg-orange-900/40 text-orange-300"
+      : "hover:bg-orange-50 text-orange-600"
+  }`}
+>
+  <Flag size={18} />
+  <span>Báo cáo</span>
+</button>
+
+<hr className={darkMode ? "border-blue-900" : "border-gray-200"} />
+
+<button
+  onClick={() => {
+    setDeletePostId(post.id);
+    setOpenMenu(null);
+}}
+  className={`flex w-full items-center gap-3 px-5 py-3 transition ${
+    darkMode
+      ? "text-red-400 hover:bg-red-900/30"
+      : "text-red-600 hover:bg-red-50"
+  }`}
+>
+  <Trash2 size={18} />
+  <span>Xóa bài viết</span>
+</button>
+
+    </div>
+
+  )}
+
+</div>
 
                 </div>
 
@@ -589,33 +737,63 @@ export default function CommunityPage() {
                     {post.title}
                   </h2>
 
-                  <p
-                    className={`mt-4 leading-8 ${
-                      darkMode
-                        ? "text-slate-300"
-                        : "text-gray-600"
-                    }`}
-                  >
-                    {post.content}
-                  </p>
+<div
+    className={`mt-4 prose max-w-none ${
+        darkMode ? "prose-invert" : ""
+    }`}
+    dangerouslySetInnerHTML={{
+        __html: post.content,
+    }}
+/>
 
                 </div>
 
-                {post.image && (
+{/* ===== HIỂN THỊ ẢNH ===== */}
 
-                  <div className="mt-6 overflow-hidden">
+{post.images?.length === 1 && (
+  <div className="mt-6">
+    <Image
+      src={post.images[0]}
+      width={1600}
+      height={900}
+      alt=""
+      onClick={() => setPreviewImage(post.images[0])}
+      className="
+        w-full
+        max-h-[650px]
+        rounded-2xl
+        object-cover
+        cursor-pointer
+        transition
+        hover:scale-[1.01]
+      "
+    />
+  </div>
+)}
 
-                    <Image
-                      src={post.image}
-                      width={1200}
-                      height={700}
-                      alt={post.title}
-                      className="w-full object-cover transition duration-500 hover:scale-105"
-                    />
-
-                  </div>
-
-                )}
+{post.images?.length === 2 && (
+  <div className="mt-6 grid grid-cols-2 gap-2">
+    {post.images.map((img: string, index: number) => (
+      <Image
+        key={index}
+        src={img}
+        width={900}
+        height={900}
+        alt=""
+        onClick={() => setPreviewImage(img)}
+        className="
+          h-[380px]
+          w-full
+          rounded-xl
+          object-cover
+          cursor-pointer
+          transition
+          hover:opacity-90
+        "
+      />
+    ))}
+  </div>
+)}
                                 {/* ================= FOOTER ================= */}
 
                 <div
@@ -692,7 +870,7 @@ export default function CommunityPage() {
                       src="/avatar2.jpg"
                       width={42}
                       height={42}
-                      alt="Quang Huy"
+                      alt="GeoEduAI"
                       className="rounded-full"
                     />
 
@@ -705,7 +883,7 @@ export default function CommunityPage() {
                     >
 
                       <div className="font-semibold">
-                        Quang Huy
+                        GeoEduAI
                       </div>
 
                       <p
@@ -715,9 +893,7 @@ export default function CommunityPage() {
                             : "text-gray-700"
                         }`}
                       >
-                        Theo mình nguyên nhân chính là nhiệt độ giảm theo độ cao.
-                        Trung bình cứ lên khoảng 100m thì nhiệt độ giảm khoảng
-                        0,6°C nên khí hậu Tây Nguyên phân hóa rất rõ.
+                        Tính năng comment đang được cập nhật vui lòng chờ đợi!
                       </p>
 
                       <div
@@ -890,22 +1066,22 @@ export default function CommunityPage() {
 
                 <Member
                   avatar="/avatar1.jpg"
-                  name="Nguyễn Minh"
-                  role="Giáo viên Địa lí"
+                  name="Thiên Bảo"
+                  role="Nhà vua"
                   darkMode={darkMode}
                 />
 
                 <Member
                   avatar="/avatar2.jpg"
-                  name="Khánh Linh"
-                  role="Học sinh THPT"
+                  name="Bá Thọ"
+                  role="Nô Lệ"
                   darkMode={darkMode}
                 />
 
                 <Member
                   avatar="/avatar3.jpg"
-                  name="Quốc Huy"
-                  role="Chuyên gia GIS"
+                  name="Thiên Minh"
+                  role="Cúp vàng"
                   darkMode={darkMode}
                 />
 
@@ -962,7 +1138,82 @@ export default function CommunityPage() {
         </aside>
 
       </div>
+<CreatePostModal
+    images={images}
+    setImages={setImages}
+    open={openModal}
+    darkMode={darkMode}
+    title={title}
+    content={content}
+    category={category}
+    loading={loading}
+    onClose={() => setOpenModal(false)}
+    setTitle={setTitle}
+    setContent={setContent}
+    setCategory={setCategory}
+    onSubmit={async () => {
+        await createPost();
+        setOpenModal(false);
+    }}
+/>
+{deletePostId && (
 
+<div className="fixed inset-0 z-[999] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+
+    <div
+        className={`w-[430px] rounded-3xl shadow-2xl overflow-hidden ${
+            darkMode
+                ? "bg-[#0B2248]"
+                : "bg-white"
+        }`}
+    >
+
+        <div className="p-8">
+
+            <div className="flex justify-center">
+
+            </div>
+
+            <h2 className="mt-6 text-center text-2xl font-bold">
+                Xóa bài viết?
+            </h2>
+
+            <p
+                className={`mt-4 text-center leading-7 ${
+                    darkMode
+                        ? "text-slate-300"
+                        : "text-gray-500"
+                }`}
+            >
+                Sau khi xóa bạn sẽ không thể khôi phục bài viết này.
+            </p>
+
+        </div>
+
+        <div className="grid grid-cols-2 gap-4 border-t p-6">
+
+            <button
+                onClick={() => setDeletePostId(null)}
+                className="rounded-xl border py-3 font-semibold"
+            >
+                Hủy
+            </button>
+
+            <button
+                onClick={deletePost}
+                disabled={deleting}
+                className="rounded-xl bg-red-600 py-3 font-semibold text-white hover:bg-red-700"
+            >
+                {deleting ? "Đang xóa..." : "Xóa bài viết"}
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+)}  
     </main>
 
   );
