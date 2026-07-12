@@ -23,7 +23,7 @@ interface CreatePostModalProps {
     title: string;
     content: string;
     category: string;
-
+user: any;
 images: File[];
 setImages: React.Dispatch<React.SetStateAction<File[]>>;
 
@@ -39,6 +39,7 @@ setImages: React.Dispatch<React.SetStateAction<File[]>>;
 
 export default function CreatePostModal({
     open,
+    user,
     darkMode,
     title,
     content,
@@ -237,7 +238,7 @@ scrollbar-track-transparent
     <div className="flex items-center gap-4">
 
         <Image
-            src="/avatar.png"
+            src={user?.avatar_url || "/avatar.png"}
             width={60}
             height={60}
             alt="Avatar"
@@ -262,7 +263,7 @@ ${
 }
 `}
             >
-                Thiên Bảo
+                {user?.full_name || "Người dùng"}
             </div>
 
             <button

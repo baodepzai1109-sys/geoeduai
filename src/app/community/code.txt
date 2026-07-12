@@ -45,8 +45,7 @@ type Post = {
 export default function CommunityPage() {
   const [title, setTitle] = useState("");
   const router = useRouter(); 
-  const [openAuthModal, setOpenAuthModal] = useState(false);
-  const { user, logout } = useAuth();
+  const { user } = useUser();
   const [openProfile, setOpenProfile] = useState(false);
   const [category, setCategory] = useState("Thảo luận chung");
   const [openCreatePost, setOpenCreatePost] = useState(false);
@@ -60,12 +59,7 @@ const [openMenu, setOpenMenu] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(false);
-async function handleLogout() {
-    await logout();
-
-    router.push("/login");
-}
-  async function loadPosts() {
+async function loadPosts() {
   const { data, error } = await supabase
  .from("posts")
   .select(`
@@ -85,10 +79,6 @@ async function handleLogout() {
   setPosts(data ?? []);
 }
 async function createPost() {
-  if (!user) {
-  setOpenAuthModal(true);
-  return;
-}
   if (!title.trim() || !content.trim()) {
     alert("Vui lòng nhập tiêu đề và nội dung.");
     return;
@@ -221,8 +211,8 @@ gap-3
           <div className="flex items-center gap-4">
             <Image
               src="/images/logo.png"
-              width={36}
-              height={36}
+              width={40}
+              height={40}
               alt="GeoEduAI"
               className="rounded-full"
             />
@@ -271,15 +261,7 @@ gap-3
           <div className="flex items-center gap-3">
 
 <button
-    onClick={() => {
-    if (!user) {
-      setOpenModal(false);
-        setOpenAuthModal(true);
-        return;
-    }
-
-    setOpenModal(true);
-}}
+    onClick={() => setOpenModal(true)}
    className="
 hidden
 md:flex
@@ -330,7 +312,7 @@ py-3
                 <Moon size={20} />
               )}
             </button>
-{user ? (
+
             <div className="relative flex items-center gap-3">
 
               <Image
@@ -399,12 +381,7 @@ py-3
 <button
     onClick={() => {
         setOpenProfile(false);
-        if (!user) {
-    setOpenAuthModal(true);
-    return;
-}
-
-router.push("/community/profile");
+        router.push("/community/profile");
     }}
     className={`w-full px-5 py-3 text-left transition ${
         darkMode
@@ -425,44 +402,16 @@ router.push("/community/profile");
         Cài đặt
       </button>
 
-<button
-    onClick={handleLogout}
-    className="
-    w-full
-    px-5
-    py-3
-    text-left
-    text-red-500
-    hover:bg-red-50
-    "
->
-    Đăng xuất
-</button>
+      <button
+        className="w-full px-5 py-3 text-left text-red-500 hover:bg-red-50"
+      >
+        Đăng xuất
+      </button>
     </div>
   </div>
 )}
             </div>
-) : (
-  <button
-    onClick={() => setOpenAuthModal(true)}
-    className="
-    rounded-2xl
-    bg-gradient-to-r
-    from-[#1565C0]
-    to-[#42A5F5]
-    px-6
-    py-3
-    font-bold
-    text-white
-    shadow-xl
-    transition
-    hover:scale-105
-    "
->
-    Tham gia GeoEduAI
-</button>
 
-)}
           </div>
 
         </div>
@@ -640,14 +589,7 @@ lg:py-8
               />
 
 <button
- onClick={() => {
-        if (!user) {
-            setOpenAuthModal(true);
-            return;
-        }
-
-        setOpenModal(true);
-    }}
+    onClick={() => setOpenModal(true)}
     className={`flex-1 rounded-full px-6 py-4 text-left transition ${
         darkMode
             ? "bg-[#133462] text-slate-300 hover:bg-[#1B4D8F]"
@@ -1061,9 +1003,9 @@ md:py-5  ${
                   <div className="flex gap-4">
 
                     <Image
-                      src="/images/logo1.png"
-                      width={30}
-                      height={30}
+                      src="/avatar2.jpg"
+                      width={42}
+                      height={42}
                       alt="GeoEduAI"
                       className="rounded-full"
                     />
@@ -1453,14 +1395,7 @@ md:py-5  ${
 
   {/* Create */}
   <button
-    onClick={() => {
-    if (!user) {
-        setOpenAuthModal(true);
-        return;
-    }
-
-    setOpenModal(true);
-}}
+    onClick={() => setOpenModal(true)}
     className="
       -mt-8
       flex
@@ -1500,155 +1435,6 @@ md:py-5  ${
   </button>
 
 </div>
-{openAuthModal && (
-    <div
-        className="
-        fixed
-        inset-0
-        z-[999]
-        flex
-        items-center
-        justify-center
-        bg-black/60
-        backdrop-blur-md
-        p-3 sm:p-4
-        "
-        onClick={() => setOpenAuthModal(false)}
-    >
-        <div
-            onClick={(e) => e.stopPropagation()}
-            className="
-           w-full
-max-w-[92vw]
-sm:max-w-md
-
-overflow-hidden
-
-rounded-3xl
-sm:rounded-[32px]
-
-bg-white
-shadow-2xl
-            "
-        >
-{/* Header */}
-
-<div
-    className="
-    bg-gradient-to-r
-    from-[#071A3B]
-    via-[#0B2248]
-    to-[#1565C0]
-
-    px-5
-    py-6
-
-    sm:px-8
-    sm:py-10
-
-    text-center
-    "
->
-    <img
-        src="/images/logo.png"
-        alt="GeoEduAI"
-        className="
-        mx-auto
-
-        h-14
-        w-14
-
-        sm:h-20
-        sm:w-20
-
-        rounded-full
-        "
-    />
-
-    <h2
-        className="
-        mt-4
-
-        text-2xl
-        sm:text-3xl
-
-        font-black
-        text-white
-        "
-    >
-        Tham gia GeoEduAI
-    </h2>
-
-    <p
-        className="
-        mt-2
-
-        text-sm
-        sm:text-base
-
-        text-blue-100
-        leading-relaxed
-        "
-    >
-        Đăng nhập để tham gia cộng đồng học tập Địa lí.
-    </p>
-</div>
-
-            {/* Body */}
-
-            <div className="space-y-4 p-8">
-
-                <button
-                    onClick={() => router.push("/login")}
-                    className="
-                    w-full
-                    rounded-2xl
-                    bg-[#1565C0]
-                    py-4
-                    font-bold
-                    text-white
-                    transition
-                    hover:bg-[#0D47A1]
-                    "
-                >
-                    Đăng nhập
-                </button>
-
-                <button
-                    onClick={() => router.push("/register")}
-                    className="
-                    w-full
-                    rounded-2xl
-                    border-2
-                    border-[#1565C0]
-                    py-4
-                    font-bold
-                    text-[#1565C0]
-                    transition
-                    hover:bg-blue-50
-                    "
-                >
-                    Đăng ký
-                </button>
-
-                <button
-                    onClick={() => setOpenAuthModal(false)}
-                    className="
-                    w-full
-                    py-3
-                    text-gray-500
-                    transition
-                    hover:text-black
-                    "
-                >
-                    Đóng
-                </button>
-
-            </div>
-
-        </div>
-    </div>
-)}
     </main>
 
   );

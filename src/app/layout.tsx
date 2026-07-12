@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "@/styles/tiptap.css";
+import { AuthProvider } from "@/context/AuthContext";
 import MaintenanceGuard from "@/components/MaintenanceGuard";
 import "./globals.css";
 const inter = Inter({
@@ -21,10 +22,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body className={inter.className}>
+<body className={inter.className}>
+    <AuthProvider>
         <MaintenanceGuard />
         {children}
-      </body>
+    </AuthProvider>
+</body>
     </html>
   );
 }
