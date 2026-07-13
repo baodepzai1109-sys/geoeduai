@@ -1,7 +1,8 @@
 "use client";
 import CreatePostModal from "@/components/community/CreatePostModal";
-import { useEffect, useState } from "react";
-
+import { useEffect, useState, useRef } from "react";
+import CommentSection from "@/components/community/CommentSection";
+import { CircleUserRound } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import Image from "next/image";
 import useUser from "@/hooks/useUser";
@@ -25,7 +26,11 @@ import {
   BarChart3,
   Smile,
   MoreHorizontal,
+  Share2,
   Pencil,
+  Heart,
+  ThumbsUp,
+  Flame,
   Link2,
   Flag,
   Trash2,
@@ -45,8 +50,12 @@ type Post = {
 export default function CommunityPage() {
   const [title, setTitle] = useState("");
   const router = useRouter(); 
+  const longPressTimer = useRef<NodeJS.Timeout | null>(null);
+  const reactionTimeout = useRef<NodeJS.Timeout | null>(null);
+  const [hoverReaction, setHoverReaction] = useState<string | null>(null);
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const { user, logout } = useAuth();
+  const isAdmin = user?.role === "admin";
   const [openProfile, setOpenProfile] = useState(false);
   const [category, setCategory] = useState("Thảo luận chung");
   const [openCreatePost, setOpenCreatePost] = useState(false);
@@ -58,6 +67,7 @@ const [deletePostId, setDeletePostId] = useState<string | null>(null);
 const [deleting, setDeleting] = useState(false);
 const [openMenu, setOpenMenu] = useState<string | null>(null);
 const [loading, setLoading] = useState(false);
+const [longPressTriggered, setLongPressTriggered] = useState(false);
   const [search, setSearch] = useState("");
   const [darkMode, setDarkMode] = useState(false);
 async function handleLogout() {
@@ -65,14 +75,33 @@ async function handleLogout() {
 
     router.push("/login");
 }
+async function quickLike(post: any) {
+
+    const info = reactionInfo(post);
+
+    // nếu đang Like thì bỏ Like
+    if (info.reaction === "like") {
+        await reactPost(post.id, "like");
+        return;
+    }
+
+    // nếu đang tim hoặc fire thì chuyển thành like
+    await reactPost(post.id, "like");
+
+}
   async function loadPosts() {
   const { data, error } = await supabase
  .from("posts")
   .select(`
     *,
-    profiles (
+    profiles(
       full_name,
       avatar_url
+    ),
+    post_reactions(
+      id,
+      user_id,
+      reaction
     )
   `)
   .order("created_at", { ascending: false });
@@ -83,6 +112,60 @@ async function handleLogout() {
   }
 
   setPosts(data ?? []);
+}
+function countReaction(post: any, type: string) {
+    return (
+        post.post_reactions?.filter(
+            (r: any) => r.reaction === type
+        ).length ?? 0
+    );
+}
+
+function myReaction(post: any) {
+    return post.post_reactions?.find(
+        (r: any) => r.user_id === user?.id
+    );
+}
+function reactionInfo(post: any) {
+
+    const mine = myReaction(post);
+
+    switch (mine?.reaction) {
+
+        case "heart":
+            return {
+                reaction: "heart",
+                icon: <Heart size={20} fill="currentColor"/>,
+                text: "Yêu thích",
+                color: "text-red-500",
+            };
+
+        case "fire":
+            return {
+                reaction: "fire",
+                icon: <Flame size={20} fill="currentColor"/>,
+                text: "Hot",
+                color: "text-orange-500",
+            };
+
+        case "like":
+            return {
+                reaction: "like",
+                icon: <ThumbsUp size={20} fill="currentColor"/>,
+                text: "Hữu ích",
+                color: "text-blue-500",
+            };
+
+        default:
+            return {
+                reaction: null,
+                icon: <ThumbsUp size={20}/>,
+                text: "Thích",
+                color: "",
+            };
+
+    }
+
 }
 async function createPost() {
   if (!user) {
@@ -126,17 +209,15 @@ for (const image of images) {
 }
 const { error } = await supabase
   .from("posts")
-  .insert([
-    {
-      user_id: user?.id,
-      title,
-      content,
-      category,
-      images: imageUrls,
-      likes: 0,
-      comments: 0,
-    },
-  ]);
+.insert([
+  {
+    user_id: user?.id,
+    title,
+    content,
+    category,
+    images: imageUrls,
+  },
+]);
   setLoading(false);
 
   if (error) {
@@ -169,6 +250,59 @@ async function deletePost() {
     setDeletePostId(null);
 
     await loadPosts();
+}
+async function reactPost(
+    postId: string,
+    reaction: "heart" | "like" | "fire"
+) {
+
+    if (!user) {
+        setOpenAuthModal(true);
+        return;
+    }
+
+    const post = posts.find(
+        (p) => p.id === postId
+    );
+
+    const mine = post?.post_reactions?.find(
+        (r: any) => r.user_id === user.id
+    );
+
+    if (!mine) {
+
+        await supabase
+            .from("post_reactions")
+            .insert({
+                post_id: postId,
+                user_id: user.id,
+                reaction,
+            });
+
+    } else {
+
+        if (mine.reaction === reaction) {
+
+            await supabase
+                .from("post_reactions")
+                .delete()
+                .eq("id", mine.id);
+
+        } else {
+
+            await supabase
+                .from("post_reactions")
+                .update({
+                    reaction,
+                })
+                .eq("id", mine.id);
+
+        }
+
+    }
+
+    loadPosts();
+
 }
   useEffect(() => {
     const saved = localStorage.getItem("geoedu-theme");
@@ -443,23 +577,35 @@ router.push("/community/profile");
 )}
             </div>
 ) : (
-  <button
+<button
     onClick={() => setOpenAuthModal(true)}
     className="
-    rounded-2xl
-    bg-gradient-to-r
-    from-[#1565C0]
-    to-[#42A5F5]
-    px-6
-    py-3
-    font-bold
+    flex
+    items-center
+    justify-center
+    gap-2
+
+    rounded-xl
+
+    bg-[#1565C0]
     text-white
-    shadow-xl
+    shadow-lg
+
     transition
-    hover:scale-105
+    hover:bg-[#0D47A1]
     "
 >
-    Tham gia GeoEduAI
+
+    {/* Mobile */}
+    <span className="flex sm:hidden p-3">
+        <CircleUserRound size={22}/>
+    </span>
+
+    {/* Desktop */}
+    <span className="hidden sm:flex px-5 py-3 font-bold">
+        Tham gia GeoEduAI
+    </span>
+
 </button>
 
 )}
@@ -636,7 +782,7 @@ lg:py-8
                 width={52}
                 height={52}
                 alt="Avatar"
-                className="rounded-full"
+                className="h-14 w-14 rounded-full object-cover flex-none"
               />
 
 <button
@@ -763,16 +909,20 @@ lg:justify-between{
 
           <div className="space-y-6">
 
-            {posts.map((post) => (
+  {posts.map((post) => {
 
-              <div
-                key={post.id}
-                className={`overflow-hidden rounded-2xl lg:rounded-3xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
-                  darkMode
-                    ? "bg-[#0B2248] border-blue-900"
-                    : "bg-white border-gray-200"
-                }`}
-              >
+    const info = reactionInfo(post);
+
+    return (
+
+      <div
+        key={post.id}
+        className={`overflow-hidden rounded-2xl lg:rounded-3xl border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl ${
+          darkMode
+            ? "bg-[#0B2248] border-blue-900"
+            : "bg-white border-gray-200"
+        }`}
+      >
 
                 {/* HEADER */}
 
@@ -781,14 +931,18 @@ lg:justify-between{
                   <div className="flex gap-4">
 
 <Image
-    src={
-        post.profiles?.avatar_url ||
-        "/avatar.png"
-    }
+    src={post.profiles?.avatar_url || "/avatar.png"}
     width={56}
     height={56}
     alt=""
-    className="rounded-full"
+    className="
+        h-14
+        w-14
+        rounded-full
+        object-cover
+        flex-none
+        self-start
+    "
 />
 
                     <div>
@@ -881,7 +1035,7 @@ lg:justify-between{
 </button>
 
 <hr className={darkMode ? "border-blue-900" : "border-gray-200"} />
-{post.user_id === user?.id && (
+{(post.user_id === user?.id || user?.role === "admin") && (
 <button
   onClick={() => {
     setDeletePostId(post.id);
@@ -920,8 +1074,8 @@ lg:justify-between{
                   </h2>
 
 <div
-    className={`mt-4 prose max-w-none ${
-        darkMode ? "prose-invert" : ""
+    className={`mt-4 post-content ${
+        darkMode ? "text-slate-100" : "text-gray-800"
     }`}
     dangerouslySetInnerHTML={{
         __html: post.content,
@@ -997,14 +1151,27 @@ md:py-5  ${
                       : "text-gray-500"
                   }`}
                 >
-                  <div className="flex items-center gap-5">
-                    <span>❤️ {post.likes}</span>
-                    <span>👍 18</span>
-                    <span>🔥 6</span>
-                  </div>
+<div className="flex items-center gap-7 text-sm font-medium">
+
+  <div className="flex items-center gap-2 text-pink-500">
+    <Heart size={18} fill="currentColor" />
+    <span>{countReaction(post,"heart")}</span>
+  </div>
+
+  <div className="flex items-center gap-2 text-blue-400">
+    <ThumbsUp size={18} fill="currentColor" />
+    <span>{countReaction(post,"like")}</span>
+  </div>
+
+  <div className="flex items-center gap-2 text-orange-400">
+    <Flame size={18} fill="currentColor" />
+    <span>{countReaction(post,"fire")}</span>
+  </div>
+
+</div>
 
                   <div>
-                    {post.comments} bình luận
+                    {post.comments?.[0]?.count ?? 0} bình luận
                   </div>
                 </div>
 
@@ -1018,113 +1185,237 @@ md:py-5  ${
 
                 {/* ================= ACTION ================= */}
 
-                <div className="grid grid-cols-4">
+<div className="grid grid-cols-4 border-t border-blue-900">
 
-                  <ActionButton
-                    icon="👍"
-                    text="Thích"
-                    darkMode={darkMode}
-                  />
+<div
+    className="relative flex justify-center"
+    onMouseEnter={() => {
 
-                  <ActionButton
-                    icon="💬"
-                    text="Bình luận"
-                    darkMode={darkMode}
-                  />
+    if (reactionTimeout.current) {
+        clearTimeout(reactionTimeout.current);
+    }
 
-                  <ActionButton
-                    icon="↗"
-                    text="Chia sẻ"
-                    darkMode={darkMode}
-                  />
+    setHoverReaction(post.id);
 
-                  <ActionButton
-                    icon="🔖"
-                    text="Lưu"
-                    darkMode={darkMode}
-                  />
+}}
+    onMouseLeave={() => {
 
-                </div>
+    reactionTimeout.current = setTimeout(() => {
+        setHoverReaction(null);
+    }, 250);
 
-                <hr
-                  className={
-                    darkMode
-                      ? "border-blue-900"
-                      : "border-gray-200"
-                  }
+}}
+>
+
+    {/* Popup Reaction */}
+
+    {hoverReaction === post.id && (
+
+<div
+    onMouseEnter={() => {
+
+        if (reactionTimeout.current) {
+            clearTimeout(reactionTimeout.current);
+        }
+
+    }}
+
+    onMouseLeave={() => {
+
+        reactionTimeout.current = setTimeout(() => {
+            setHoverReaction(null);
+        },250);
+
+    }}
+
+    className="
+    absolute
+    bottom-full
+    mb-2
+
+    flex
+    items-center
+    gap-2
+
+    rounded-full
+
+    bg-white
+
+    px-3
+    py-2
+
+    shadow-2xl
+    dark:bg-[#133462]
+"
+>
+
+<button
+    onClick={() => reactPost(post.id, "like")}
+    className="transition hover:scale-125"
+>
+    <ThumbsUp
+        size={24}
+        className="text-blue-500"
+        fill="currentColor"
+    />
+</button>
+
+            <button
+                onClick={() => reactPost(post.id, "heart")}
+                className="transition hover:scale-125"
+            >
+                <Heart
+                    size={24}
+                    className="text-red-500"
+                    fill="currentColor"
                 />
+            </button>
+
+            <button
+            onClick={() => reactPost(post.id, "fire")}
+                className="transition hover:scale-125"
+            >
+                <Flame
+                    size={24}
+                    className="text-orange-500"
+                    fill="currentColor"
+                />
+            </button>
+
+        </div>
+
+    )}
+
+<button
+    onClick={() => quickLike(post)}
+
+onMouseDown={() => {
+
+    setLongPressTriggered(false);
+
+    longPressTimer.current = setTimeout(() => {
+
+        setLongPressTriggered(true);
+
+        setHoverReaction(post.id);
+
+    },300);
+
+}}
+
+    onMouseUp={() => {
+
+        if(longPressTimer.current){
+            clearTimeout(longPressTimer.current);
+        }
+
+    }}
+
+    onMouseLeave={() => {
+
+        if(longPressTimer.current){
+            clearTimeout(longPressTimer.current);
+        }
+
+    }}
+
+onTouchStart={() => {
+
+    setLongPressTriggered(false);
+
+    longPressTimer.current = setTimeout(() => {
+
+        setLongPressTriggered(true);
+
+        setHoverReaction(post.id);
+
+    },400);
+
+}}
+
+    onTouchEnd={() => {
+
+        if(longPressTimer.current){
+            clearTimeout(longPressTimer.current);
+        }
+
+    }}
+
+    className={`
+        flex
+        items-center
+        gap-2
+        py-4
+        transition
+        ${info.color}
+    `}
+>
+
+    {info.reaction === "heart" ? (
+
+        <Heart
+            size={20}
+            fill="currentColor"
+        />
+
+    ) : info.reaction === "fire" ? (
+
+        <Flame
+            size={20}
+            fill="currentColor"
+        />
+
+    ) : (
+
+        <ThumbsUp
+            size={20}
+            fill="currentColor"
+        />
+
+    )}
+
+    <span className="font-semibold">
+        {info.text}
+    </span>
+
+</button>
+
+</div>
+
+    <button className="flex items-center justify-center gap-2 py-4 transition hover:bg-[#123867]">
+        <MessageCircle size={20}/>
+        <span className="font-semibold">
+            Bình luận
+        </span>
+    </button>
+
+    <button className="flex items-center justify-center gap-2 py-4 transition hover:bg-[#123867]">
+        <Share2 size={20}/>
+        <span className="font-semibold">
+            Chia sẻ
+        </span>
+    </button>
+
+    <button className="flex items-center justify-center gap-2 py-4 transition hover:bg-[#123867]">
+        <Bookmark size={20}/>
+        <span className="font-semibold">
+            Lưu
+        </span>
+    </button>
+
+</div>
 
                 {/* ================= COMMENT ================= */}
 
-                <div className=" p-4 md:p-6">
-
-                  <div className="flex gap-4">
-
-                    <Image
-                      src="/images/logo1.png"
-                      width={30}
-                      height={30}
-                      alt="GeoEduAI"
-                      className="rounded-full"
-                    />
-
-                    <div
-                      className={`flex-1 rounded-2xl p-4 ${
-                        darkMode
-                          ? "bg-[#133462]"
-                          : "bg-[#F5F7FC]"
-                      }`}
-                    >
-
-                      <div className="font-semibold">
-                        GeoEduAI
-                      </div>
-
-                      <p
-                        className={`mt-2 leading-7 ${
-                          darkMode
-                            ? "text-slate-300"
-                            : "text-gray-700"
-                        }`}
-                      >
-                        Tính năng comment đang được cập nhật vui lòng chờ đợi!
-                      </p>
-
-                      <div
-                        className={`mt-3 flex gap-5 text-sm ${
-                          darkMode
-                            ? "text-slate-400"
-                            : "text-gray-500"
-                        }`}
-                      >
-
-                        <button className="hover:text-blue-500">
-                          Thích
-                        </button>
-
-                        <button className="hover:text-blue-500">
-                          Trả lời
-                        </button>
-
-                        <span>
-                          1 giờ trước
-                        </span>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-
-                  <button className="mt-5 text-sm font-semibold text-[#1565C0] hover:underline">
-                    Xem thêm bình luận...
-                  </button>
-
-                </div>
+<CommentSection
+    postId={post.id}
+    darkMode={darkMode}
+    user={user}
+/>
 
               </div>
-
-            ))}
+              );
+})}
 
           </div>
 
@@ -1794,7 +2085,7 @@ function Member({
           width={48}
           height={48}
           alt={name}
-          className="rounded-full"
+          className="h-14 w-14 rounded-full object-cover flex-none"
         />
 
         <div>
