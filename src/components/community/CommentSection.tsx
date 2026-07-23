@@ -174,7 +174,7 @@ async function deleteComment(commentId: string) {
     {new Date(comment.created_at).toLocaleString("vi-VN")}
   </span>
 
-{(comment.user_id === user?.id || isAdmin) && (
+{(comment.user_id === user?.id || user?.role === "admin") && (
     <button
       onClick={() => deleteComment(comment.id)}
       className="

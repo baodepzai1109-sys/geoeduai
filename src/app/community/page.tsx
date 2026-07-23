@@ -1171,7 +1171,7 @@ md:py-5  ${
 </div>
 
                   <div>
-                    {post.comments?.[0]?.count ?? 0} bình luận
+                    {post.comments?.[0]?.count??0} bình luận
                   </div>
                 </div>
 

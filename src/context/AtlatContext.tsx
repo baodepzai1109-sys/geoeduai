@@ -156,7 +156,7 @@ useEffect(() => {
     }
   }, []);
   useEffect(() => {
-  const data = localStorage.getItem("geoedu-history");
+  const data = localStorage.getItem("geoedu-atlat-history");
 
   if (data) {
     try {
@@ -168,7 +168,7 @@ useEffect(() => {
 }, []);
 useEffect(() => {
   const visited = localStorage.getItem("geoedu-visited");
-  const history = localStorage.getItem("geoedu-history");
+  const history = localStorage.getItem("geoedu-atlat-history");
 
   if (visited) {
     try {
@@ -203,7 +203,7 @@ useEffect(() => {
   }, [bookmarks]);
   useEffect(() => {
   localStorage.setItem(
-    "geoedu-history",
+    "geoedu-atlat-history",
     JSON.stringify(history)
   );
 }, [history]);
@@ -222,7 +222,7 @@ useEffect(() => {
 
 useEffect(() => {
   localStorage.setItem(
-    "geoedu-history",
+    "geoedu-atlat-history",
     JSON.stringify(history)
   );
 }, [history]);

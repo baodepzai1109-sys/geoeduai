@@ -6,14 +6,25 @@ declare global {
     webkitSpeechRecognition: any;
   }
 }
+import remarkGfm from "remark-gfm";
 import { Mic, SendHorizontal } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 export default function AIPage() {
+  const suggestions = [
+  "Việt Nam có bao nhiêu tỉnh thành?",
+  "Giải thích quá trình đô thị hóa ở Việt Nam",
+  "Tại sao Đồng bằng sông Hồng đông dân?",
+  "Các vùng kinh tế của Việt Nam",
+  "Phân tích khí hậu Việt Nam",
+  "Đặc điểm địa hình nước ta",
+];
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [listening, setListening] = useState(false);
   const [question, setQuestion] = useState("");
   const recognitionRef = useRef<any>(null);
   const [loading, setLoading] = useState(false);
+  const [typing, setTyping] = useState(false);
   const [history, setHistory] = useState<string[]>([]);
   const [messages, setMessages] = useState<
     {
@@ -25,21 +36,68 @@ export default function AIPage() {
   useState(false);
   useEffect(() => {
   const saved = localStorage.getItem(
-    "geoedu-history"
+    "geoedu-ai-history"
   );
 
   if (saved) {
     setHistory(JSON.parse(saved));
   }
 }, []);
-
+function scrollToBottom() {
+  messagesEndRef.current?.scrollIntoView({
+    behavior: "smooth",
+    block: "end",
+  });
+}
 useEffect(() => {
-  localStorage.setItem(
-    "geoedu-history",
-    JSON.stringify(history)
-  );
+  scrollToBottom();
+}, [messages, loading]);
+useEffect(() => {
+localStorage.setItem(
+  "geoedu-ai-history",
+  JSON.stringify(history)
+);
 }, [history]);
 
+async function typeWriter(text: string) {
+  // Thêm một tin nhắn AI rỗng
+setLoading(false);   // Ẩn dấu ...
+setTyping(true);     // Bắt đầu gõ
+  setMessages((prev) => [
+    ...prev,
+    {
+      role: "assistant",
+      text: "",
+    },
+  ]);
+
+  const words = text.split(" ");
+
+  let current = "";
+
+  for (let i = 0; i < words.length; i++) {
+    current += words[i] + " ";
+
+    setMessages((prev) => {
+      const copy = [...prev];
+
+      copy[copy.length - 1] = {
+        ...copy[copy.length - 1],
+        text: current,
+      };
+
+      return copy;
+    });
+
+    // tốc độ gõ
+    await new Promise((resolve) =>
+      setTimeout(resolve, 35)
+    );
+  }
+    setTyping(false);
+    
+    
+}
   async function askAI() {
     if (!question.trim() || loading) return;
 const q = question.trim();
@@ -76,15 +134,9 @@ setHistory((prev) => {
         }),
       });
 
-      const data = await res.json();
+const data = await res.json();
 
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          text: data.answer,
-        },
-      ]);
+await typeWriter(data.answer);
     } catch {
       setMessages((prev) => [
         ...prev,
@@ -300,7 +352,13 @@ function stopVoice() {
     {history.map((item, index) => (
       <button
         key={index}
-        onClick={() => setQuestion(item)}
+        onClick={() => {
+  setQuestion(item);
+
+  setTimeout(() => {
+    askAI();
+  }, 100);
+}}
         className="
         w-full
         text-left
@@ -441,17 +499,52 @@ function stopVoice() {
           <div className="max-w-5xl mx-auto px-6 py-6">
 
             {messages.length === 0 && !loading && (
-              <div className="text-center mt-28">
+<div className="text-center mt-24">
 
-                <h2 className="text-2xl md:text-4xl font-black">
-                   GeoEdu AI
-                </h2>
+  <h2 className="text-3xl md:text-5xl font-black">
+    GeoEdu AI
+  </h2>
 
-                <p className="mt-3 text-slate-400">
-                  Hỏi bất kỳ điều gì về Địa lý Việt Nam
-                </p>
+  <p className="mt-3 text-slate-400">
+    Hỏi bất kỳ điều gì về Địa lý Việt Nam
+  </p>
 
-              </div>
+  <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
+
+    {suggestions.map((item, index) => (
+
+      <button
+        key={index}
+onClick={() => {
+  setQuestion(item);
+
+  setTimeout(() => {
+    askAI();
+  }, 100);
+}}
+        className="
+          rounded-2xl
+          bg-slate-900
+          border
+          border-blue-500/20
+          p-5
+          text-left
+          transition
+          hover:border-blue-400
+          hover:bg-slate-800
+        "
+      >
+        <p className="font-semibold">
+          {item}
+        </p>
+
+      </button>
+
+    ))}
+
+  </div>
+
+</div>
             )}
 
             {messages.map((m, i) => (
@@ -499,9 +592,9 @@ function stopVoice() {
                     prose-li:my-1
                     "
                   >
-                    <ReactMarkdown>
-                      {m.text}
-                    </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                {m.text}
+              </ReactMarkdown>
                   </div>
                 </div>
               </div>
@@ -528,8 +621,9 @@ function stopVoice() {
                 </div>
 
               </div>
+              
             )}
-
+            <div ref={messagesEndRef}></div>
           </div>
 
         </div>
